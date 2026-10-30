@@ -26,6 +26,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
   - *Objective*: Build directory layout (`backend/`, `frontend/`, `docs/`, `tests/`, `evaluation/`), `.gitignore`, `.env.example`, and baseline root `README.md`.
   - *Acceptance*: Directory structure clean, build artifacts and secrets ignored, non-secret placeholder variables defined.
 - **Part 04 — Environment and dependency reproducibility**
+  - *Status*: **COMPLETE**
   - *Objective*: Pin backend (`requirements.txt` / `pyproject.toml`) and frontend (`package.json`) dependencies with Python 3.13 compatibility. Define Pydantic settings module.
   - *Acceptance*: Reproducible virtual environment and package installation without broken C-extension builds.
 - **Part 05 — Backend app entry point and health checks**
@@ -161,8 +162,8 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **01** | Repository reconnaissance & baseline snapshot | **PASS** | Empty workspace confirmed; runtimes recorded (Py 3.13.4, Node 22.16.0, npm 10.9.2). |
 | **02** | Freeze MVP scope and architecture | **PASS** | `docs/architecture.md` & `docs/implementation_plan.md` created without conflicting stacks. |
 | **03** | Create or align project scaffolding | **PASS** | Directory layout created, `.gitignore`, `.env.example`, and directory READMEs established. |
-| **04** | Environment & dependency reproducibility | NOT RUN | Scheduled next. |
-| **05** | Backend app entry point & health checks | NOT RUN | Scheduled. |
+| **04** | Environment & dependency reproducibility | **PASS** | Dependencies pinned for Python 3.13; Pydantic settings module and tests passing. |
+| **05** | Backend app entry point & health checks | NOT RUN | Scheduled next. |
 | **06** | Database schema & migrations | NOT RUN | Scheduled. |
 | **07** | Authentication & session security | NOT RUN | Scheduled. |
 | **08** | Onboarding, profile & target role | NOT RUN | Scheduled. |
