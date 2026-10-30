@@ -30,6 +30,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
   - *Objective*: Pin backend (`requirements.txt` / `pyproject.toml`) and frontend (`package.json`) dependencies with Python 3.13 compatibility. Define Pydantic settings module.
   - *Acceptance*: Reproducible virtual environment and package installation without broken C-extension builds.
 - **Part 05 — Backend app entry point and health checks**
+  - *Status*: **COMPLETE**
   - *Objective*: FastAPI bootstrap, CORS configuration, structured exception handlers, `/api/v1/health` endpoint, and health check test.
   - *Acceptance*: Backend boots cleanly, returns JSON health payload, handles CORS from configured origins.
 - **Part 06 — Database schema and migrations**
@@ -163,8 +164,8 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **02** | Freeze MVP scope and architecture | **PASS** | `docs/architecture.md` & `docs/implementation_plan.md` created without conflicting stacks. |
 | **03** | Create or align project scaffolding | **PASS** | Directory layout created, `.gitignore`, `.env.example`, and directory READMEs established. |
 | **04** | Environment & dependency reproducibility | **PASS** | Dependencies pinned for Python 3.13; Pydantic settings module and tests passing. |
-| **05** | Backend app entry point & health checks | NOT RUN | Scheduled next. |
-| **06** | Database schema & migrations | NOT RUN | Scheduled. |
+| **05** | Backend app entry point & health checks | **PASS** | FastAPI entry point, structured error handling, CORS, live health probe passing (13/13 tests). |
+| **06** | Database schema & migrations | NOT RUN | Scheduled next. |
 | **07** | Authentication & session security | NOT RUN | Scheduled. |
 | **08** | Onboarding, profile & target role | NOT RUN | Scheduled. |
 | **09** | Secure resume upload endpoint | NOT RUN | Scheduled. |
