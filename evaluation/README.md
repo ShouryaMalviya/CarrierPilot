@@ -10,3 +10,4 @@ Evaluation harness, frozen synthetic benchmark datasets, and reproducible metric
    - **MRR (Mean Reciprocal Rank)**
    - **nDCG@K (Normalized Discounted Cumulative Gain)**
 3. **Zero Fabricated Results**: All reported tables, graphs, and metrics must be output from automated scripts running against frozen test splits.
+
