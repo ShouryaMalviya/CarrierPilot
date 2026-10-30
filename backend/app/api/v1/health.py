@@ -31,3 +31,4 @@ def get_health(settings: Settings = Depends(get_settings)) -> HealthResponse:
             semantic_embeddings=settings.ENABLE_SEMANTIC_EMBEDDINGS,
         ),
     )
+

@@ -20,3 +20,4 @@ class HealthResponse(BaseModel):
     version: str = Field(description="Application version")
     timestamp: datetime = Field(description="UTC timestamp of the health check")
     services: ServicesStatus
+
