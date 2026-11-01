@@ -50,6 +50,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
   - *Objective*: User profile CRUD, target role configuration (defaults: Junior Python Developer, Entry-Level Data/ML Analyst).
   - *Acceptance*: User ownership enforced; onboarding copy free of hiring guarantee claims.
 - **Part 09 — Secure resume upload endpoint**
+  - *Status*: **COMPLETE**
   - *Objective*: Multipart file upload for PDF and DOCX, MIME/extension verification, private file storage outside web root using UUID keys.
   - *Acceptance*: Rejection of invalid types, oversized files (>5MB), and unauthenticated access.
 - **Part 10 — PDF/DOCX text extraction**
@@ -171,8 +172,8 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **06** | Database schema & migrations | **PASS** | SQLAlchemy 2.0 entities, Alembic reversible migrations, constraint & cascade tests passing (19/19 tests). |
 | **07** | Authentication & session security | **PASS** | Registration, bcrypt hashing, JWT issuance & validation, protected routes passing (31/31 tests). |
 | **08** | Onboarding, profile & target role | **PASS** | Profile CRUD, role presets, onboarding disclosure, user ownership isolation passing (38/38 tests). |
-| **09** | Secure resume upload endpoint | NOT RUN | Scheduled next. |
-| **10** | PDF/DOCX text extraction | NOT RUN | Scheduled. |
+| **09** | Secure resume upload endpoint | **PASS** | PDF/DOCX magic-byte validation, UUID storage isolation, size limits, ownership checks passing (47/47 tests). |
+| **10** | PDF/DOCX text extraction | NOT RUN | Scheduled next. |
 | **11** | Resume sections, skills & evidence | NOT RUN | Scheduled. |
 | **12** | Job description intake & management | NOT RUN | Scheduled. |
 | **13** | Lexical matching baseline | NOT RUN | Scheduled. |
