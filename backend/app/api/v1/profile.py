@@ -94,3 +94,4 @@ def list_target_roles() -> List[str]:
 def get_onboarding_info() -> OnboardingDisclosure:
     """Return explicit educational boundaries, consent information, and non-hiring disclaimers."""
     return OnboardingDisclosure()
+

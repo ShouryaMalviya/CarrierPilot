@@ -73,3 +73,4 @@ class OnboardingDisclosure(BaseModel):
         default=DEFAULT_SUPPORTED_ROLES,
         description="Curated target role presets available during onboarding",
     )
+

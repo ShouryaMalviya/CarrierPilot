@@ -169,3 +169,4 @@ def test_onboarding_disclosure_metadata(client):
     disclaimer_text = " ".join(data["disclaimers"]).lower()
     assert "hiring" in disclaimer_text
     assert "guarantee" in disclaimer_text
+
