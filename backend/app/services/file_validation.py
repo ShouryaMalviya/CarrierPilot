@@ -111,3 +111,4 @@ def validate_resume_file(content: bytes, filename: str) -> Tuple[str, str, str]:
         mime_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
     return sanitized, clean_ext, mime_type
+

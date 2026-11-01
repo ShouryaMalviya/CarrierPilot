@@ -265,3 +265,4 @@ def test_delete_resume_removes_physical_file(client, test_db):
 
     # Verify database record was deleted
     assert test_db.query(Resume).filter_by(id=resume_id).first() is None
+

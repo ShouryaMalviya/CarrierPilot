@@ -27,3 +27,4 @@ class ResumeListResponse(BaseModel):
 
     resumes: List[ResumeResponse]
     total: int
+

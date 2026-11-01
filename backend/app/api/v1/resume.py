@@ -136,3 +136,4 @@ def delete_resume(
     db.commit()
 
     return {"message": "Resume deleted successfully."}
+
