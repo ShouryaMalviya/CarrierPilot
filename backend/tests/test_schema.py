@@ -214,3 +214,4 @@ def test_cascade_delete_user(db_session):
     # Global skill and question must NOT be deleted
     assert db_session.query(Skill).filter_by(canonical_name="SQL").first() is not None
     assert db_session.query(Question).filter_by(topic="SQL").first() is not None
+
