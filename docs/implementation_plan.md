@@ -34,6 +34,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
   - *Objective*: FastAPI bootstrap, CORS configuration, structured exception handlers, `/api/v1/health` endpoint, and health check test.
   - *Acceptance*: Backend boots cleanly, returns JSON health payload, handles CORS from configured origins.
 - **Part 06 — Database schema and migrations**
+  - *Status*: **COMPLETE**
   - *Objective*: SQLAlchemy 2.0 declarative models (`users`, `profiles`, `resumes`, `skills`, `jobs`, `questions`, `attempts`, `interviews`), Alembic configuration, initial migration.
   - *Acceptance*: Migrations apply cleanly, foreign keys, unique constraints, and indices properly established.
 
@@ -165,8 +166,8 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **03** | Create or align project scaffolding | **PASS** | Directory layout created, `.gitignore`, `.env.example`, and directory READMEs established. |
 | **04** | Environment & dependency reproducibility | **PASS** | Dependencies pinned for Python 3.13; Pydantic settings module and tests passing. |
 | **05** | Backend app entry point & health checks | **PASS** | FastAPI entry point, structured error handling, CORS, live health probe passing (13/13 tests). |
-| **06** | Database schema & migrations | NOT RUN | Scheduled next. |
-| **07** | Authentication & session security | NOT RUN | Scheduled. |
+| **06** | Database schema & migrations | **PASS** | SQLAlchemy 2.0 entities, Alembic reversible migrations, constraint & cascade tests passing (19/19 tests). |
+| **07** | Authentication & session security | NOT RUN | Scheduled next. |
 | **08** | Onboarding, profile & target role | NOT RUN | Scheduled. |
 | **09** | Secure resume upload endpoint | NOT RUN | Scheduled. |
 | **10** | PDF/DOCX text extraction | NOT RUN | Scheduled. |
