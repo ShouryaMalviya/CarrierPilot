@@ -46,6 +46,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
   - *Objective*: User registration, bcrypt password hashing, JWT creation/validation, and `/api/v1/auth/me` endpoint.
   - *Acceptance*: Passwords never stored in plaintext, expired/invalid tokens rejected with 401, duplicate emails rejected with 400.
 - **Part 08 — Onboarding, profile and target role**
+  - *Status*: **COMPLETE**
   - *Objective*: User profile CRUD, target role configuration (defaults: Junior Python Developer, Entry-Level Data/ML Analyst).
   - *Acceptance*: User ownership enforced; onboarding copy free of hiring guarantee claims.
 - **Part 09 — Secure resume upload endpoint**
@@ -169,8 +170,8 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **05** | Backend app entry point & health checks | **PASS** | FastAPI entry point, structured error handling, CORS, live health probe passing (13/13 tests). |
 | **06** | Database schema & migrations | **PASS** | SQLAlchemy 2.0 entities, Alembic reversible migrations, constraint & cascade tests passing (19/19 tests). |
 | **07** | Authentication & session security | **PASS** | Registration, bcrypt hashing, JWT issuance & validation, protected routes passing (31/31 tests). |
-| **08** | Onboarding, profile & target role | NOT RUN | Scheduled next. |
-| **09** | Secure resume upload endpoint | NOT RUN | Scheduled. |
+| **08** | Onboarding, profile & target role | **PASS** | Profile CRUD, role presets, onboarding disclosure, user ownership isolation passing (38/38 tests). |
+| **09** | Secure resume upload endpoint | NOT RUN | Scheduled next. |
 | **10** | PDF/DOCX text extraction | NOT RUN | Scheduled. |
 | **11** | Resume sections, skills & evidence | NOT RUN | Scheduled. |
 | **12** | Job description intake & management | NOT RUN | Scheduled. |
