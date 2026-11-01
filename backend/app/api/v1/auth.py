@@ -127,3 +127,4 @@ def get_me(
 ) -> UserResponse:
     """Return the profile and account details of the authenticated caller."""
     return UserResponse.model_validate(current_user)
+

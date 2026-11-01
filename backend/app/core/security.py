@@ -68,3 +68,4 @@ def decode_access_token(token: str) -> Dict[str, Any]:
             detail={"code": "INVALID_TOKEN", "message": "Could not validate authentication credentials."},
             headers={"WWW-Authenticate": "Bearer"},
         )
+
