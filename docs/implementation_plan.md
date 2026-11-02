@@ -70,6 +70,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
   - *Objective*: Authenticated CRUD for job descriptions, required vs preferred skill parsing, and synthetic demo job fixtures.
   - *Acceptance*: Jobs stored with provenance; manual skill requirement editing supported.
 - **Part 13 — Lexical matching baseline**
+  - *Status*: **COMPLETE**
   - *Objective*: Deterministic TF-IDF cosine similarity and normalized skill overlap ranker.
   - *Acceptance*: Deterministic, explainable matching output without external API calls.
 - **Part 14 — Optional semantic similarity with safe fallback**
