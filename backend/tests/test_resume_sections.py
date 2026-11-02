@@ -273,3 +273,4 @@ def test_skill_correction_ownership_isolation(client):
         headers={"Authorization": f"Bearer {token_b}"},
     )
     assert res_b.status_code == 404
+

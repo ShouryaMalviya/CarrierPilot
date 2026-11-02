@@ -48,3 +48,4 @@ class UpdateSectionsRequest(BaseModel):
     """User correction request to edit segmented section contents."""
 
     sections: Dict[str, str] = Field(description="Dictionary of updated section texts")
+

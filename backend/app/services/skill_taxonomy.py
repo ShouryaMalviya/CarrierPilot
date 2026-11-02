@@ -74,3 +74,4 @@ def ensure_default_skills(db: Session) -> Dict[str, Skill]:
 
     db.commit()
     return existing_skills
+
