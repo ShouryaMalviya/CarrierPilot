@@ -74,6 +74,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
   - *Objective*: Deterministic TF-IDF cosine similarity and normalized skill overlap ranker.
   - *Acceptance*: Deterministic, explainable matching output without external API calls.
 - **Part 14 — Optional semantic similarity with safe fallback**
+  - *Status*: **COMPLETE**
   - *Objective*: Lazy-loaded sentence embedding adapter with transparent fallback to lexical baseline when unavailable.
   - *Acceptance*: System starts without model download; fallback mode visibly flagged in API response.
 - **Part 15 — Hybrid ranking and explainable results**

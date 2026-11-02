@@ -161,11 +161,12 @@ def calculate_lexical_match(
     required_skills: Set[str],
     preferred_skills: Set[str],
     use_sklearn: bool = False,
+    use_semantic: bool = False,
 ) -> Tuple[MatchScoreBreakdown, SkillGapBreakdown]:
-    """Calculate composite lexical match score and skill gap breakdown.
+    """Calculate composite match score and skill gap breakdown.
 
-    Formula (Lexical Baseline):
-        overall_score = (0.60 * req_coverage + 0.20 * pref_coverage + 0.20 * tfidf_sim) * 100
+    Supports optional neural sentence embeddings with transparent, deterministic
+    fallback to the lexical TF-IDF baseline when model weights are unavailable.
     """
     tfidf_sim = compute_tfidf_similarity(resume_text, job_text, use_sklearn=use_sklearn)
     skill_gap, req_cov, pref_cov = compute_skill_gap(
@@ -174,14 +175,43 @@ def calculate_lexical_match(
         preferred_skills=preferred_skills,
     )
 
-    overall_raw = (0.60 * req_cov + 0.20 * pref_cov + 0.20 * tfidf_sim) * 100.0
+    similarity_mode = "lexical"
+    is_fallback = False
+    fallback_reason: Optional[str] = None
+    semantic_sim: Optional[float] = None
+
+    if use_semantic:
+        from app.services.semantic_service import semantic_manager
+
+        sim_val, mode, fallback_active, reason = semantic_manager.compute_similarity(
+            resume_text, job_text, prefer_semantic=True
+        )
+        similarity_mode = mode
+        is_fallback = fallback_active
+        fallback_reason = reason
+
+        if mode == "semantic":
+            semantic_sim = sim_val
+            # Hybrid weights when neural semantic similarity is operational
+            overall_raw = (0.50 * req_cov + 0.30 * semantic_sim + 0.20 * pref_cov) * 100.0
+        else:
+            # Safe transparent fallback to lexical baseline weights
+            overall_raw = (0.60 * req_cov + 0.20 * pref_cov + 0.20 * tfidf_sim) * 100.0
+    else:
+        # Standard deterministic lexical baseline
+        overall_raw = (0.60 * req_cov + 0.20 * pref_cov + 0.20 * tfidf_sim) * 100.0
+
     overall_score = round(max(0.0, min(100.0, overall_raw)), 2)
 
     scores = MatchScoreBreakdown(
         required_coverage=req_cov,
         preferred_coverage=pref_cov,
         tfidf_similarity=tfidf_sim,
+        semantic_similarity=semantic_sim,
         overall_score=overall_score,
+        similarity_mode=similarity_mode,
+        is_fallback=is_fallback,
+        fallback_reason=fallback_reason,
     )
 
     return scores, skill_gap
@@ -229,8 +259,9 @@ def match_resume_to_job(
     resume: Resume,
     job: Job,
     use_sklearn: bool = False,
+    use_semantic: bool = False,
 ) -> LexicalMatchResponse:
-    """Perform single-job lexical match evaluation between a Resume and Job model."""
+    """Perform single-job match evaluation between a Resume and Job model."""
     resume_text, resume_skills = extract_resume_data(resume)
     job_text, req_skills, pref_skills = extract_job_data(job)
 
@@ -241,6 +272,7 @@ def match_resume_to_job(
         required_skills=req_skills,
         preferred_skills=pref_skills,
         use_sklearn=use_sklearn,
+        use_semantic=use_semantic,
     )
 
     return LexicalMatchResponse(
@@ -261,6 +293,7 @@ def match_resume_to_all_jobs(
     limit: int = 50,
     offset: int = 0,
     use_sklearn: bool = False,
+    use_semantic: bool = False,
 ) -> BatchMatchResponse:
     """Evaluate a candidate resume against all accessible jobs, returning matches ranked by score."""
     resume_text, resume_skills = extract_resume_data(resume)
@@ -275,6 +308,7 @@ def match_resume_to_all_jobs(
             required_skills=req_skills,
             preferred_skills=pref_skills,
             use_sklearn=use_sklearn,
+            use_semantic=use_semantic,
         )
 
         batch_items.append(
@@ -287,6 +321,9 @@ def match_resume_to_all_jobs(
                 required_coverage=scores.required_coverage,
                 preferred_coverage=scores.preferred_coverage,
                 tfidf_similarity=scores.tfidf_similarity,
+                semantic_similarity=scores.semantic_similarity,
+                similarity_mode=scores.similarity_mode,
+                is_fallback=scores.is_fallback,
                 missing_required_count=len(skill_gap.missing_required),
                 missing_required=skill_gap.missing_required,
             )

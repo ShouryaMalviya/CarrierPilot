@@ -1,4 +1,4 @@
-"""Explainable lexical job matching and skill gap analysis routes."""
+"""Explainable job matching, semantic fallback, and skill gap analysis routes."""
 
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -7,25 +7,50 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_current_user, get_db
 from app.models import Job, JobSkill, Resume, ResumeSkill, Skill, User
-from app.schemas.matching import BatchMatchResponse, LexicalMatchResponse
+from app.schemas.matching import BatchMatchResponse, LexicalMatchResponse, SemanticStatusResponse
 from app.services.matching_service import match_resume_to_all_jobs, match_resume_to_job
+from app.services.semantic_service import semantic_manager
 
 router = APIRouter()
+
+
+@router.get(
+    "/status",
+    response_model=SemanticStatusResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Inspect status of the optional semantic embedding model and fallback state",
+)
+def get_matching_engine_status(
+    current_user: User = Depends(get_current_user),
+) -> SemanticStatusResponse:
+    """Return diagnostic availability of neural sentence-transformers vs. lexical fallback."""
+    status_data = semantic_manager.get_status()
+    return SemanticStatusResponse(
+        is_available=status_data["is_available"],
+        model_name=status_data["model_name"],
+        provider_type=status_data["provider_type"],
+        fallback_mode=status_data["fallback_mode"],
+        last_error=status_data["last_error"],
+    )
 
 
 @router.post(
     "/resumes/{resume_id}/jobs/{job_id}",
     response_model=LexicalMatchResponse,
     status_code=status.HTTP_200_OK,
-    summary="Compute explainable lexical match between a resume and a specific job posting",
+    summary="Compute explainable match between a resume and a specific job posting",
 )
 def match_resume_with_job(
     resume_id: int,
     job_id: int,
+    use_semantic: bool = Query(
+        default=False,
+        description="Attempt neural semantic similarity with transparent fallback to lexical baseline",
+    ),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> LexicalMatchResponse:
-    """Evaluate candidate resume against a job posting with TF-IDF similarity and skill gap analysis."""
+    """Evaluate candidate resume against a job posting with skill gap analysis and optional embeddings."""
     # 1. Fetch resume belonging strictly to current user
     resume = (
         db.query(Resume)
@@ -52,7 +77,7 @@ def match_resume_with_job(
             detail={"code": "JOB_NOT_FOUND", "message": "The requested job posting was not found."},
         )
 
-    return match_resume_to_job(resume, job)
+    return match_resume_to_job(resume, job, use_semantic=use_semantic)
 
 
 @router.post(
@@ -63,6 +88,10 @@ def match_resume_with_job(
 )
 def batch_match_resume(
     resume_id: int,
+    use_semantic: bool = Query(
+        default=False,
+        description="Attempt neural semantic similarity across batch matches with fallback",
+    ),
     limit: int = Query(default=50, ge=1, le=100, description="Max matches to return"),
     offset: int = Query(default=0, ge=0, description="Offset for pagination"),
     current_user: User = Depends(get_current_user),
@@ -99,5 +128,6 @@ def batch_match_resume(
         accessible_jobs=accessible_jobs,
         limit=limit,
         offset=offset,
+        use_semantic=use_semantic,
     )
 

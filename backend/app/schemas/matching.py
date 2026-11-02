@@ -1,4 +1,4 @@
-"""Pydantic schemas for explainable job matching and skill gap analysis."""
+"""Pydantic schemas for explainable job matching, semantic fallback, and skill gap analysis."""
 
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field
@@ -48,10 +48,28 @@ class MatchScoreBreakdown(BaseModel):
         ge=0.0,
         le=1.0,
     )
+    semantic_similarity: Optional[float] = Field(
+        default=None,
+        description="Cosine similarity from semantic embeddings if available (0.0 to 1.0)",
+        ge=0.0,
+        le=1.0,
+    )
     overall_score: float = Field(
         description="Composite match score on a 0.0 to 100.0 scale",
         ge=0.0,
         le=100.0,
+    )
+    similarity_mode: str = Field(
+        default="lexical",
+        description="Active similarity method: 'semantic', 'lexical', or 'lexical_fallback'",
+    )
+    is_fallback: bool = Field(
+        default=False,
+        description="True if fallback to lexical matching occurred instead of neural embeddings",
+    )
+    fallback_reason: Optional[str] = Field(
+        default=None,
+        description="Explanation when fallback mode is active",
     )
 
 
@@ -83,6 +101,13 @@ class BatchMatchItem(BaseModel):
     required_coverage: float = Field(description="Required skill coverage (0.0 to 1.0)")
     preferred_coverage: float = Field(description="Preferred skill coverage (0.0 to 1.0)")
     tfidf_similarity: float = Field(description="TF-IDF textual cosine similarity (0.0 to 1.0)")
+    semantic_similarity: Optional[float] = Field(
+        default=None, description="Semantic embedding similarity if computed"
+    )
+    similarity_mode: str = Field(
+        default="lexical", description="Similarity mode ('semantic', 'lexical', or 'lexical_fallback')"
+    )
+    is_fallback: bool = Field(default=False, description="Whether fallback mode was active")
     missing_required_count: int = Field(description="Number of missing required skills")
     missing_required: List[str] = Field(default_factory=list, description="Missing required skill names")
 
@@ -98,3 +123,12 @@ class BatchMatchResponse(BaseModel):
         description="Strict ethical disclaimer regarding textual alignment vs. hiring guarantees",
     )
 
+
+class SemanticStatusResponse(BaseModel):
+    """Diagnostic status for the optional semantic similarity provider."""
+
+    is_available: bool = Field(description="Whether a semantic embedding model is loaded and ready")
+    model_name: str = Field(description="Configured or active embedding model name")
+    provider_type: str = Field(description="Active provider class name")
+    fallback_mode: bool = Field(description="Whether the system is currently defaulting to lexical fallback")
+    last_error: Optional[str] = Field(default=None, description="Diagnostic error from loading attempt if any")
