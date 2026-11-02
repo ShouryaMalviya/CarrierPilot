@@ -97,3 +97,4 @@ class BatchMatchResponse(BaseModel):
         default=DEFAULT_MATCHING_DISCLAIMER,
         description="Strict ethical disclaimer regarding textual alignment vs. hiring guarantees",
     )
+

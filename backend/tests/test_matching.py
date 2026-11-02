@@ -353,3 +353,4 @@ def test_match_unauthenticated(client: TestClient):
 
     res_batch = client.post("/api/v1/matching/resumes/1/batch")
     assert res_batch.status_code == 401
+
