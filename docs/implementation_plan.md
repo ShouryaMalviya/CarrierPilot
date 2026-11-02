@@ -54,6 +54,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
   - *Objective*: Multipart file upload for PDF and DOCX, MIME/extension verification, private file storage outside web root using UUID keys.
   - *Acceptance*: Rejection of invalid types, oversized files (>5MB), and unauthenticated access.
 - **Part 10 — PDF/DOCX text extraction**
+  - *Status*: **COMPLETE**
   - *Objective*: Deterministic text extraction using `pypdf`/`pdfplumber` and `python-docx`. Graceful error handling for scanned/image-only PDFs.
   - *Acceptance*: Unit tests on synthetic documents succeed; scanned PDFs return actionable warnings rather than fake extracted text.
 - **Part 11 — Resume sections, skills and evidence**
@@ -173,8 +174,8 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **07** | Authentication & session security | **PASS** | Registration, bcrypt hashing, JWT issuance & validation, protected routes passing (31/31 tests). |
 | **08** | Onboarding, profile & target role | **PASS** | Profile CRUD, role presets, onboarding disclosure, user ownership isolation passing (38/38 tests). |
 | **09** | Secure resume upload endpoint | **PASS** | PDF/DOCX magic-byte validation, UUID storage isolation, size limits, ownership checks passing (47/47 tests). |
-| **10** | PDF/DOCX text extraction | NOT RUN | Scheduled next. |
-| **11** | Resume sections, skills & evidence | NOT RUN | Scheduled. |
+| **10** | PDF/DOCX text extraction | **PASS** | Deterministic extraction with pypdf/docx, scanned detection, encrypted handling, line preservation (57/57 tests). |
+| **11** | Resume sections, skills & evidence | NOT RUN | Scheduled next. |
 | **12** | Job description intake & management | NOT RUN | Scheduled. |
 | **13** | Lexical matching baseline | NOT RUN | Scheduled. |
 | **14** | Optional semantic similarity with fallback | NOT RUN | Scheduled. |

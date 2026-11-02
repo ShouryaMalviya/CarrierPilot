@@ -1,4 +1,4 @@
-"""Resume upload, storage, and lifecycle management routes."""
+"""Resume upload, storage, text extraction, and lifecycle management routes."""
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
@@ -8,6 +8,7 @@ from app.models import Resume, User
 from app.schemas.resume import ResumeListResponse, ResumeResponse
 from app.services.file_validation import validate_resume_file
 from app.services.storage import storage_service
+from app.services.text_extraction import extract_text_from_file
 
 router = APIRouter()
 
@@ -16,30 +17,33 @@ router = APIRouter()
     "/upload",
     response_model=ResumeResponse,
     status_code=status.HTTP_201_CREATED,
-    summary="Upload a PDF or DOCX resume document",
+    summary="Upload and automatically extract text from a PDF or DOCX resume",
 )
 def upload_resume(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> ResumeResponse:
-    """Upload, validate, and store a resume document privately outside the web root."""
-    # Read upload contents safely
+    """Upload, validate, privately store, and extract text from a resume document."""
+    # 1. Read file contents safely
     try:
         content = file.file.read()
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={"code": "UPLOAD_READ_ERROR", "message": "Failed to read uploaded file payload."},
         )
 
-    # Validate file extension, magic-byte signatures, and size
+    # 2. Validate file extension, magic-byte signatures, and size
     clean_filename, clean_ext, mime_type = validate_resume_file(content, file.filename or "resume.pdf")
 
-    # Save to private filesystem storage with non-guessable opaque key
+    # 3. Save to private filesystem storage with non-guessable opaque key
     file_key, file_path = storage_service.save_file(content, clean_ext)
 
-    # Persist database record scoped to current user
+    # 4. Perform deterministic text extraction
+    extraction = extract_text_from_file(file_path, clean_ext)
+
+    # 5. Persist database record scoped to current user
     new_resume = Resume(
         user_id=current_user.id,
         original_filename=clean_filename,
@@ -47,14 +51,52 @@ def upload_resume(
         file_path=file_path,
         file_size_bytes=len(content),
         mime_type=mime_type,
-        parse_status="pending",
-        parser_version="1.0.0",
+        parse_status=extraction.status,
+        parser_version=extraction.parser_version,
+        parsed_content=extraction.to_dict(),
     )
     db.add(new_resume)
     db.commit()
     db.refresh(new_resume)
 
     return ResumeResponse.model_validate(new_resume)
+
+
+@router.post(
+    "/{resume_id}/extract",
+    response_model=ResumeResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Re-run text extraction on an existing resume",
+)
+def trigger_extraction(
+    resume_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> ResumeResponse:
+    """Re-run deterministic text extraction on a previously uploaded resume."""
+    resume = (
+        db.query(Resume)
+        .filter(Resume.id == resume_id, Resume.user_id == current_user.id)
+        .first()
+    )
+    if not resume:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "RESUME_NOT_FOUND", "message": "The requested resume was not found."},
+        )
+
+    # Determine extension from filename or path
+    ext = resume.original_filename.split(".")[-1]
+    extraction = extract_text_from_file(resume.file_path, ext)
+
+    resume.parse_status = extraction.status
+    resume.parser_version = extraction.parser_version
+    resume.parsed_content = extraction.to_dict()
+
+    db.commit()
+    db.refresh(resume)
+
+    return ResumeResponse.model_validate(resume)
 
 
 @router.get(
@@ -84,7 +126,7 @@ def list_my_resumes(
     "/{resume_id}",
     response_model=ResumeResponse,
     status_code=status.HTTP_200_OK,
-    summary="Retrieve resume metadata by ID",
+    summary="Retrieve resume metadata and extracted content by ID",
 )
 def get_resume(
     resume_id: int,
@@ -136,4 +178,3 @@ def delete_resume(
     db.commit()
 
     return {"message": "Resume deleted successfully."}
-

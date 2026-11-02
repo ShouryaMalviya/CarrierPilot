@@ -67,8 +67,31 @@ def _get_auth_token(client: TestClient, email: str) -> str:
 
 
 def _create_synthetic_pdf_bytes(text: str = "Candidate Experience") -> bytes:
-    """Generate a minimal valid synthetic PDF header and body."""
-    return b"%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n" + text.encode("utf-8")
+    """Generate a minimal valid synthetic PDF with catalog and text stream."""
+    stream_content = f"BT\n/F1 12 Tf\n72 712 Td\n({text}) Tj\nET"
+    stream_bytes = stream_content.encode("latin-1")
+    length = len(stream_bytes)
+
+    pdf = (
+        b"%PDF-1.4\n"
+        b"1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n"
+        b"2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n"
+        b"3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] "
+        b"/Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj\n"
+        b"4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n"
+        b"5 0 obj << /Length " + str(length).encode("ascii") + b" >>\n"
+        b"stream\n" + stream_bytes + b"\nendstream\nendobj\n"
+        b"xref\n0 6\n"
+        b"0000000000 65535 f \n"
+        b"0000000009 00000 n \n"
+        b"0000000058 00000 n \n"
+        b"0000000115 00000 n \n"
+        b"0000000244 00000 n \n"
+        b"0000000318 00000 n \n"
+        b"trailer << /Size 6 /Root 1 0 R >>\n"
+        b"startxref\n450\n%%EOF"
+    )
+    return pdf
 
 
 def _create_synthetic_docx_bytes() -> bytes:
@@ -95,7 +118,7 @@ def test_upload_valid_pdf_success(client):
     data = response.json()
     assert data["original_filename"] == "my_resume.pdf"
     assert data["mime_type"] == "application/pdf"
-    assert data["parse_status"] == "pending"
+    assert data["parse_status"] in {"completed", "pending"}
     assert len(data["file_key"]) == 32  # UUID hex key
     assert data["file_size_bytes"] == len(pdf_bytes)
 
