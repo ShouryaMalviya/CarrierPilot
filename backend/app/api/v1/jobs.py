@@ -276,20 +276,14 @@ def update_job(
         job.description = payload.description
 
     if skills_need_update:
-        # Delete existing job skills and re-attach
-        db.query(JobSkill).filter(JobSkill.job_id == job.id).delete()
+        # Clear existing job skills and re-attach
+        job.job_skills.clear()
+        db.flush()
         _attach_skills(db, job, req_skills, pref_skills)
 
     db.commit()
-
-    # Re-query
-    refreshed = (
-        db.query(Job)
-        .options(joinedload(Job.job_skills).joinedload(JobSkill.skill))
-        .filter(Job.id == job.id)
-        .first()
-    )
-    return format_job_response(refreshed)
+    db.refresh(job)
+    return format_job_response(job)
 
 
 @router.delete(

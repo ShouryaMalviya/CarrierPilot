@@ -66,6 +66,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 
 ### Phase 3: Job Intake, Explainable Matching & Evaluation (Parts 12 – 16)
 - **Part 12 — Job description intake and management**
+  - *Status*: **COMPLETE**
   - *Objective*: Authenticated CRUD for job descriptions, required vs preferred skill parsing, and synthetic demo job fixtures.
   - *Acceptance*: Jobs stored with provenance; manual skill requirement editing supported.
 - **Part 13 — Lexical matching baseline**

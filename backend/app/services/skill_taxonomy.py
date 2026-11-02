@@ -38,6 +38,8 @@ DEFAULT_SKILL_TAXONOMY: Dict[str, Dict[str, object]] = {
     "Redis": {"category": "databases", "aliases": []},
     # Developer Tools & Platforms
     "Docker": {"category": "tools", "aliases": ["docker compose", "containerization"]},
+    "Kubernetes": {"category": "tools", "aliases": ["k8s"]},
+    "AWS": {"category": "tools", "aliases": ["amazon web services"]},
     "Git": {"category": "tools", "aliases": ["github", "gitlab", "version control"]},
     "Linux": {"category": "tools", "aliases": ["unix", "ubuntu"]},
     "REST APIs": {"category": "tools", "aliases": ["restful api", "rest api", "rest api development"]},
