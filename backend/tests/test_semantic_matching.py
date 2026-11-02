@@ -302,3 +302,4 @@ def test_batch_match_with_semantic_flag(client: TestClient):
     for item in data["matches"]:
         assert item["similarity_mode"] == "lexical_fallback"
         assert item["is_fallback"] is True
+

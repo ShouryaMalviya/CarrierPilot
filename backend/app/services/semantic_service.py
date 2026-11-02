@@ -176,3 +176,4 @@ class SemanticSimilarityManager:
 
 # Global singleton instance
 semantic_manager = SemanticSimilarityManager()
+
