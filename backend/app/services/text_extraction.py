@@ -179,3 +179,4 @@ def extract_text_from_file(file_path: str, extension: str) -> ExtractionResult:
             status="failed",
             warnings=[f"Unsupported file format '{clean_ext}' for text extraction."],
         )
+

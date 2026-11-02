@@ -272,3 +272,4 @@ def test_api_retrigger_extraction(client):
     data = re_res.json()
     assert data["parse_status"] == "completed"
     assert "Alembic, Pydantic" in data["parsed_content"]["text"]
+
