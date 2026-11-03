@@ -78,6 +78,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
   - *Objective*: Lazy-loaded sentence embedding adapter with transparent fallback to lexical baseline when unavailable.
   - *Acceptance*: System starts without model download; fallback mode visibly flagged in API response.
 - **Part 15 — Hybrid ranking and explainable results**
+  - *Status*: **COMPLETE**
   - *Objective*: Weighted combination (0.50 required skill coverage + 0.30 semantic similarity + 0.20 preferred skill coverage), gap analysis, learning recommendations.
   - *Acceptance*: Breakdown of component scores; clear disclaimer that score represents text alignment, not hiring chance.
 - **Part 16 — Matching evaluation dataset and notebook**

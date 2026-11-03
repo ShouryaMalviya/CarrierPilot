@@ -1,6 +1,6 @@
-"""Pydantic schemas for explainable job matching, semantic fallback, and skill gap analysis."""
+"""Pydantic schemas for explainable job matching, hybrid scoring, and skill gap analysis."""
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 DEFAULT_MATCHING_DISCLAIMER = (
@@ -28,6 +28,27 @@ class SkillGapBreakdown(BaseModel):
     additional_skills: List[str] = Field(
         default_factory=list, description="Skills listed on the resume that are not mentioned in the job description"
     )
+
+
+class MatchedSkillEvidence(BaseModel):
+    """Resume evidence citation supporting a matched job qualification."""
+
+    canonical_name: str = Field(description="Canonical skill title")
+    category: str = Field(default="general", description="Skill taxonomy category")
+    is_required: bool = Field(description="Whether this was a required (True) or preferred (False) qualification")
+    evidence_snippet: Optional[str] = Field(default=None, description="Exact sentence/snippet quoted from resume")
+    confidence_score: Optional[float] = Field(default=1.0, description="Extraction confidence score (0.0 to 1.0)")
+    is_user_confirmed: bool = Field(default=False, description="Whether the user explicitly confirmed this skill")
+
+
+class LearningRecommendation(BaseModel):
+    """Actionable diagnostic recommendation targeting a missing qualification."""
+
+    skill_name: str = Field(description="Target skill name to learn or practice")
+    category: str = Field(default="general", description="Taxonomy category")
+    priority: str = Field(description="Recommendation priority ('high' for required, 'medium' for preferred)")
+    rationale: str = Field(description="Plain-text explanation why this skill was recommended")
+    suggested_action: str = Field(description="Concrete action item (practice topic, tutorial, or project)")
 
 
 class MatchScoreBreakdown(BaseModel):
@@ -71,6 +92,10 @@ class MatchScoreBreakdown(BaseModel):
         default=None,
         description="Explanation when fallback mode is active",
     )
+    applied_weights: Dict[str, float] = Field(
+        default_factory=dict,
+        description="Transparent breakdown of weights applied to each scoring component",
+    )
 
 
 class LexicalMatchResponse(BaseModel):
@@ -84,6 +109,15 @@ class LexicalMatchResponse(BaseModel):
     company: Optional[str] = Field(default=None, description="Company name")
     scores: MatchScoreBreakdown = Field(description="Component score breakdown")
     skill_gap: SkillGapBreakdown = Field(description="Categorized skill gap details")
+    evidence: List[MatchedSkillEvidence] = Field(
+        default_factory=list, description="Traceable resume citations for matched skills"
+    )
+    recommendations: List[LearningRecommendation] = Field(
+        default_factory=list, description="Actionable recommendations addressing skill gaps"
+    )
+    explanation_summary: str = Field(
+        default="", description="Human-readable synthesis explaining the score"
+    )
     disclaimer: str = Field(
         default=DEFAULT_MATCHING_DISCLAIMER,
         description="Strict ethical disclaimer regarding textual alignment vs. hiring guarantees",

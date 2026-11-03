@@ -11,8 +11,10 @@ from app.schemas.matching import (
     DEFAULT_MATCHING_DISCLAIMER,
     BatchMatchItem,
     BatchMatchResponse,
+    LearningRecommendation,
     LexicalMatchResponse,
     MatchScoreBreakdown,
+    MatchedSkillEvidence,
     SkillGapBreakdown,
 )
 
@@ -179,6 +181,7 @@ def calculate_lexical_match(
     is_fallback = False
     fallback_reason: Optional[str] = None
     semantic_sim: Optional[float] = None
+    applied_weights = {}
 
     if use_semantic:
         from app.services.semantic_service import semantic_manager
@@ -193,12 +196,27 @@ def calculate_lexical_match(
         if mode == "semantic":
             semantic_sim = sim_val
             # Hybrid weights when neural semantic similarity is operational
+            applied_weights = {
+                "required_skills": 0.50,
+                "semantic_similarity": 0.30,
+                "preferred_skills": 0.20,
+            }
             overall_raw = (0.50 * req_cov + 0.30 * semantic_sim + 0.20 * pref_cov) * 100.0
         else:
             # Safe transparent fallback to lexical baseline weights
+            applied_weights = {
+                "required_skills": 0.60,
+                "preferred_skills": 0.20,
+                "tfidf_similarity": 0.20,
+            }
             overall_raw = (0.60 * req_cov + 0.20 * pref_cov + 0.20 * tfidf_sim) * 100.0
     else:
         # Standard deterministic lexical baseline
+        applied_weights = {
+            "required_skills": 0.60,
+            "preferred_skills": 0.20,
+            "tfidf_similarity": 0.20,
+        }
         overall_raw = (0.60 * req_cov + 0.20 * pref_cov + 0.20 * tfidf_sim) * 100.0
 
     overall_score = round(max(0.0, min(100.0, overall_raw)), 2)
@@ -212,6 +230,7 @@ def calculate_lexical_match(
         similarity_mode=similarity_mode,
         is_fallback=is_fallback,
         fallback_reason=fallback_reason,
+        applied_weights=applied_weights,
     )
 
     return scores, skill_gap
@@ -255,6 +274,121 @@ def extract_job_data(job: Job) -> Tuple[str, Set[str], Set[str]]:
     return text, req_skills, pref_skills
 
 
+def extract_matched_skill_evidence(
+    resume: Resume,
+    matched_required: List[str],
+    matched_preferred: List[str],
+) -> List[MatchedSkillEvidence]:
+    """Retrieve traceable resume evidence citations for matched job qualifications."""
+    evidence_list: List[MatchedSkillEvidence] = []
+    skill_link_map = {
+        rs.skill.canonical_name: rs
+        for rs in resume.resume_skills
+        if rs.skill and rs.skill.canonical_name
+    }
+
+    for skill_name in matched_required:
+        link = skill_link_map.get(skill_name)
+        category = link.skill.category if link and link.skill else "general"
+        snippet = link.evidence_snippet if link else None
+        conf = link.confidence_score if link else 1.0
+        confirmed = link.is_user_confirmed if link else False
+        evidence_list.append(
+            MatchedSkillEvidence(
+                canonical_name=skill_name,
+                category=category,
+                is_required=True,
+                evidence_snippet=snippet,
+                confidence_score=conf,
+                is_user_confirmed=confirmed,
+            )
+        )
+
+    for skill_name in matched_preferred:
+        link = skill_link_map.get(skill_name)
+        category = link.skill.category if link and link.skill else "general"
+        snippet = link.evidence_snippet if link else None
+        conf = link.confidence_score if link else 1.0
+        confirmed = link.is_user_confirmed if link else False
+        evidence_list.append(
+            MatchedSkillEvidence(
+                canonical_name=skill_name,
+                category=category,
+                is_required=False,
+                evidence_snippet=snippet,
+                confidence_score=conf,
+                is_user_confirmed=confirmed,
+            )
+        )
+
+    return evidence_list
+
+
+def generate_learning_recommendations(
+    missing_required: List[str],
+    missing_preferred: List[str],
+) -> List[LearningRecommendation]:
+    """Generate prioritized, actionable preparation recommendations targeting skill gaps."""
+    recs: List[LearningRecommendation] = []
+
+    for skill in missing_required:
+        recs.append(
+            LearningRecommendation(
+                skill_name=skill,
+                category="required_qualification",
+                priority="high",
+                rationale=f"'{skill}' is explicitly required for this position but was not found on your resume.",
+                suggested_action=f"Prioritize building foundational knowledge and practical projects in {skill}.",
+            )
+        )
+
+    for skill in missing_preferred:
+        recs.append(
+            LearningRecommendation(
+                skill_name=skill,
+                category="preferred_qualification",
+                priority="medium",
+                rationale=f"'{skill}' is preferred or bonus for this position and provides competitive differentiation.",
+                suggested_action=f"Review foundational documentation and introductory usage patterns for {skill}.",
+            )
+        )
+
+    return recs
+
+
+def generate_explanation_summary(
+    job_title: str,
+    scores: MatchScoreBreakdown,
+    gap: SkillGapBreakdown,
+) -> str:
+    """Synthesize an auditable human-readable narrative explaining match scores and gaps."""
+    total_req = len(gap.matched_required) + len(gap.missing_required)
+    req_pct = int(scores.required_coverage * 100)
+    summary = (
+        f"For '{job_title}', your resume covers {len(gap.matched_required)} of {total_req} "
+        f"required skills ({req_pct}%). "
+    )
+    if gap.missing_required:
+        summary += f"Missing required qualifications: {', '.join(gap.missing_required)}. "
+    else:
+        summary += "All specified core required skills are present on your resume. "
+
+    total_pref = len(gap.matched_preferred) + len(gap.missing_preferred)
+    if total_pref > 0:
+        pref_pct = int(scores.preferred_coverage * 100)
+        summary += f"Preferred qualification coverage is {pref_pct}% ({len(gap.matched_preferred)}/{total_pref}). "
+
+    if scores.similarity_mode == "semantic" and scores.semantic_similarity is not None:
+        sem_pct = int(scores.semantic_similarity * 100)
+        summary += f"Semantic textual alignment is {sem_pct}% using neural embeddings. "
+    else:
+        tfidf_pct = int(scores.tfidf_similarity * 100)
+        summary += f"Textual keyword alignment is {tfidf_pct}% via TF-IDF cosine similarity. "
+
+    summary += f"Overall match score is {scores.overall_score}/100."
+    return summary
+
+
 def match_resume_to_job(
     resume: Resume,
     job: Job,
@@ -275,6 +409,21 @@ def match_resume_to_job(
         use_semantic=use_semantic,
     )
 
+    evidence = extract_matched_skill_evidence(
+        resume=resume,
+        matched_required=skill_gap.matched_required,
+        matched_preferred=skill_gap.matched_preferred,
+    )
+    recommendations = generate_learning_recommendations(
+        missing_required=skill_gap.missing_required,
+        missing_preferred=skill_gap.missing_preferred,
+    )
+    explanation = generate_explanation_summary(
+        job_title=job.title,
+        scores=scores,
+        gap=skill_gap,
+    )
+
     return LexicalMatchResponse(
         resume_id=resume.id,
         job_id=job.id,
@@ -282,6 +431,9 @@ def match_resume_to_job(
         company=job.company,
         scores=scores,
         skill_gap=skill_gap,
+        evidence=evidence,
+        recommendations=recommendations,
+        explanation_summary=explanation,
         disclaimer=DEFAULT_MATCHING_DISCLAIMER,
     )
 
