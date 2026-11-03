@@ -181,11 +181,11 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **09** | Secure resume upload endpoint | **PASS** | PDF/DOCX magic-byte validation, UUID storage isolation, size limits, ownership checks passing (47/47 tests). |
 | **10** | PDF/DOCX text extraction | **PASS** | Deterministic extraction with pypdf/docx, scanned detection, encrypted handling, line preservation (57/57 tests). |
 | **11** | Resume sections, skills & evidence | **PASS** | Section segmentation, taxonomy normalization, evidence linking, user skill CRUD passing (63/63 tests). |
-| **12** | Job description intake & management | NOT RUN | Scheduled next. |
-| **13** | Lexical matching baseline | NOT RUN | Scheduled. |
-| **14** | Optional semantic similarity with fallback | NOT RUN | Scheduled. |
-| **15** | Hybrid ranking & explainable results | NOT RUN | Scheduled. |
-| **16** | Matching evaluation dataset & notebook | NOT RUN | Scheduled. |
+| **12** | Job description intake & management | **PASS** | Auto-extraction, explicit overrides, demo seed, ownership isolation passing (75/75 tests). |
+| **13** | Lexical matching baseline | **PASS** | TF-IDF cosine similarity, skill gap breakdown, coverage analysis passing (86/86 tests). |
+| **14** | Optional semantic similarity with fallback | **PASS** | Lazy-load SentenceTransformers, transparent lexical fallback, mode status API passing (94/94 tests). |
+| **15** | Hybrid ranking & explainable results | **PASS** | Hybrid score weighting, evidence snippet citations, learning recommendations passing (97/97 tests). |
+| **16** | Matching evaluation dataset & notebook | **PASS** | Frozen benchmark dataset, MRR/Recall/nDCG evaluation harness, notebook passing (107/107 tests). |
 | **17** | Question bank model & curated seed content | NOT RUN | Scheduled. |
 | **18** | Diagnostic practice API | NOT RUN | Scheduled. |
 | **19** | Attempt recording & grading | NOT RUN | Scheduled. |

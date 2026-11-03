@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "description": "Frozen synthetic placement matching evaluation benchmark for fresh graduate roles.",
+  "jobs": [
+    {
+      "id": "job_py_backend",
+      "title": "Junior Python Backend Developer",
+      "company": "Nexus Technologies",
+      "description": "We are seeking a Junior Python Backend Developer. Requirements: Solid foundation in Python, FastAPI, and SQL databases. Preferred: Experience with Docker, Git version control, or PostgreSQL.",
+      "required_skills": ["Python", "FastAPI", "SQL"],
+      "preferred_skills": ["Docker", "Git", "PostgreSQL"]
+    },
+    {
+      "id": "job_data_analyst",
+      "title": "Entry-Level Data Analyst",
+      "company": "Insight Data Labs",
+      "description": "Seeking an Entry-Level Data Analyst to clean datasets and build reporting dashboards. Requirements: Strong proficiency in Python, SQL, and Pandas. Preferred: Hands-on experience with Matplotlib, Seaborn, or Scikit-Learn.",
+      "required_skills": ["Python", "SQL", "Pandas"],
+      "preferred_skills": ["Matplotlib", "Seaborn", "Scikit-Learn"]
+    },
+    {
+      "id": "job_frontend_react",
+      "title": "Junior Frontend Developer",
+      "company": "PixelCraft Studios",
+      "description": "Looking for a Junior Frontend Developer. Requirements: Strong fundamentals in JavaScript, TypeScript, React, HTML, and CSS. Preferred: Experience with REST APIs, Git, or Node.js.",
+      "required_skills": ["JavaScript", "TypeScript", "React", "HTML", "CSS"],
+      "preferred_skills": ["REST APIs", "Git", "Node.js"]
+    },
+    {
+      "id": "job_devops_apprentice",
+      "title": "Cloud & DevOps Apprentice",
+      "company": "InfraScale Networks",
+      "description": "Entry-level Cloud & Infrastructure engineer. Requirements: Proficiency in Linux, Bash scripting, and Git. Preferred: Exposure to Docker, Kubernetes, or AWS.",
+      "required_skills": ["Linux", "Bash", "Git"],
+      "preferred_skills": ["Docker", "Kubernetes", "AWS"]
+    },
+    {
+      "id": "job_ml_engineer",
+      "title": "Junior Machine Learning Engineer",
+      "company": "Cognitive AI Systems",
+      "description": "Junior ML role focusing on model training and evaluation. Requirements: Python, NumPy, Pandas, and Scikit-Learn. Preferred: PyTorch or TensorFlow, Git, and Docker.",
+      "required_skills": ["Python", "NumPy", "Pandas", "Scikit-Learn"],
+      "preferred_skills": ["PyTorch", "TensorFlow", "Git", "Docker"]
+    }
+  ],
+  "candidates": [
+    {
+      "id": "cand_python_star",
+      "name": "Alex Chen",
+      "target_role": "Junior Python Developer",
+      "resume_text": "Alex Chen. Software Engineering Graduate. Highly proficient in Python, FastAPI, and SQL. Built scalable REST APIs using PostgreSQL and Git. Hands-on Docker containerization projects.",
+      "skills": ["Python", "FastAPI", "SQL", "Git", "PostgreSQL", "Docker"],
+      "ground_truth_relevance": {
+        "job_py_backend": 3,
+        "job_data_analyst": 2,
+        "job_ml_engineer": 1,
+        "job_devops_apprentice": 1,
+        "job_frontend_react": 0
+      }
+    },
+    {
+      "id": "cand_data_focus",
+      "name": "Priya Sharma",
+      "target_role": "Data Analyst",
+      "resume_text": "Priya Sharma. Bachelor of Technology in Data Science. Skilled in Python, SQL, and Pandas dataframes. Built visualization dashboards using Matplotlib and Seaborn with Scikit-Learn baseline modeling.",
+      "skills": ["Python", "SQL", "Pandas", "Matplotlib", "Seaborn", "Scikit-Learn"],
+      "ground_truth_relevance": {
+        "job_data_analyst": 3,
+        "job_ml_engineer": 2,
+        "job_py_backend": 2,
+        "job_devops_apprentice": 0,
+        "job_frontend_react": 0
+      }
+    },
+    {
+      "id": "cand_frontend_specialist",
+      "name": "Marcus Johnson",
+      "target_role": "Frontend Developer",
+      "resume_text": "Marcus Johnson. Computer Science graduate specializing in modern frontend. Expert in JavaScript, TypeScript, React, HTML, CSS. Integrated REST APIs and used Git version control.",
+      "skills": ["JavaScript", "TypeScript", "React", "HTML", "CSS", "REST APIs", "Git"],
+      "ground_truth_relevance": {
+        "job_frontend_react": 3,
+        "job_py_backend": 1,
+        "job_devops_apprentice": 0,
+        "job_data_analyst": 0,
+        "job_ml_engineer": 0
+      }
+    },
+    {
+      "id": "cand_infra_sysadmin",
+      "name": "Elena Rostova",
+      "target_role": "DevOps Engineer",
+      "resume_text": "Elena Rostova. System Administration & Cloud enthusiast. Proficient in Linux system commands, Bash automation scripts, and Git. Managed Docker containers with foundational Kubernetes exposure.",
+      "skills": ["Linux", "Bash", "Git", "Docker", "Kubernetes"],
+      "ground_truth_relevance": {
+        "job_devops_apprentice": 3,
+        "job_py_backend": 1,
+        "job_frontend_react": 0,
+        "job_data_analyst": 0,
+        "job_ml_engineer": 0
+      }
+    },
+    {
+      "id": "cand_ai_researcher",
+      "name": "Devin Vance",
+      "target_role": "Machine Learning Engineer",
+      "resume_text": "Devin Vance. Artificial Intelligence undergraduate. Strong mathematical background with Python, NumPy arrays, Pandas processing, and Scikit-Learn classifiers. Trained neural networks in PyTorch.",
+      "skills": ["Python", "NumPy", "Pandas", "Scikit-Learn", "PyTorch", "Git"],
+      "ground_truth_relevance": {
+        "job_ml_engineer": 3,
+        "job_data_analyst": 2,
+        "job_py_backend": 1,
+        "job_devops_apprentice": 0,
+        "job_frontend_react": 0
+      }
+    }
+  ]
+}
