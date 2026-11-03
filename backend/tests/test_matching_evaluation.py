@@ -194,3 +194,4 @@ class TestBenchmarkHarness:
         with open(out_file, "r", encoding="utf-8") as f:
             saved_report = json.load(f)
         assert saved_report["macro_metrics"]["mean_mrr"] == macro["mean_mrr"]
+
