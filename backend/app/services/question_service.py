@@ -189,3 +189,4 @@ def delete_question(db: Session, question: Question) -> None:
     """Delete a question from the database."""
     db.delete(question)
     db.commit()
+
