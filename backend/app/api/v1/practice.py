@@ -6,6 +6,12 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db
 from app.models import User
+from app.schemas.practice_session import (
+    PracticeSessionCreate,
+    PracticeSessionListResponse,
+    PracticeSessionResponse,
+    PracticeSessionSummary,
+)
 from app.schemas.question import (
     QuestionCreate,
     QuestionDetail,
@@ -14,7 +20,7 @@ from app.schemas.question import (
     QuestionSeedResponse,
     TopicSummary,
 )
-from app.services import question_service
+from app.services import practice_session_service, question_service
 
 router = APIRouter()
 
@@ -139,3 +145,136 @@ def create_practice_question(
     """Author a new question with validated options and answer key."""
     question = question_service.create_question(db, question_in)
     return QuestionDetail.model_validate(question)
+
+
+# ==============================================================================
+# Diagnostic Practice Session Lifecycle Endpoints
+# ==============================================================================
+
+@router.post(
+    "/sessions",
+    response_model=PracticeSessionResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new diagnostic practice session",
+)
+def create_practice_session(
+    session_in: PracticeSessionCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PracticeSessionResponse:
+    """Initiate a diagnostic session tailored by topic and difficulty."""
+    session = practice_session_service.create_practice_session(
+        db=db,
+        user_id=current_user.id,
+        req=session_in,
+    )
+    return practice_session_service.build_session_response(db, session)
+
+
+@router.get(
+    "/sessions",
+    response_model=PracticeSessionListResponse,
+    summary="List active and completed practice sessions for the current user",
+)
+def list_practice_sessions(
+    status_filter: Optional[str] = Query(None, alias="status", description="Filter by status (in_progress, completed, abandoned)"),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=50),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PracticeSessionListResponse:
+    """Retrieve practice sessions belonging exclusively to the authenticated user."""
+    sessions, total = practice_session_service.list_user_sessions(
+        db=db,
+        user_id=current_user.id,
+        status_filter=status_filter,
+        skip=skip,
+        limit=limit,
+    )
+    items = [PracticeSessionSummary.model_validate(s) for s in sessions]
+    return PracticeSessionListResponse(
+        items=items,
+        total=total,
+        skip=skip,
+        limit=limit,
+    )
+
+
+@router.get(
+    "/sessions/{session_id}",
+    response_model=PracticeSessionResponse,
+    summary="Get active practice session status and current question",
+)
+def get_practice_session(
+    session_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PracticeSessionResponse:
+    """Fetch session state, current question, and progress for the authenticated user."""
+    session = practice_session_service.get_practice_session(
+        db=db,
+        session_id=session_id,
+        user_id=current_user.id,
+    )
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Practice session '{session_id}' not found.",
+        )
+    return practice_session_service.build_session_response(db, session)
+
+
+@router.post(
+    "/sessions/{session_id}/next",
+    response_model=PracticeSessionResponse,
+    summary="Advance to the next question in the practice session",
+)
+def advance_practice_session(
+    session_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PracticeSessionResponse:
+    """Advance current_index by one, completing session if all questions are finished."""
+    session = practice_session_service.get_practice_session(
+        db=db,
+        session_id=session_id,
+        user_id=current_user.id,
+    )
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Practice session '{session_id}' not found.",
+        )
+    if session.status != "in_progress":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot advance session with status '{session.status}'.",
+        )
+    updated_session = practice_session_service.advance_session(db, session)
+    return practice_session_service.build_session_response(db, updated_session)
+
+
+@router.post(
+    "/sessions/{session_id}/abandon",
+    response_model=PracticeSessionResponse,
+    summary="Abandon an in-progress practice session",
+)
+def abandon_practice_session(
+    session_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PracticeSessionResponse:
+    """Mark session as abandoned, terminating active question progression."""
+    session = practice_session_service.get_practice_session(
+        db=db,
+        session_id=session_id,
+        user_id=current_user.id,
+    )
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Practice session '{session_id}' not found.",
+        )
+    abandoned_session = practice_session_service.abandon_session(db, session)
+    return practice_session_service.build_session_response(db, abandoned_session)
+

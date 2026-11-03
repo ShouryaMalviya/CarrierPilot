@@ -42,6 +42,9 @@ class User(Base):
     attempts: Mapped[List["PracticeAttempt"]] = relationship(
         "PracticeAttempt", back_populates="user", cascade="all, delete-orphan"
     )
+    practice_sessions: Mapped[List["PracticeSession"]] = relationship(
+        "PracticeSession", back_populates="user", cascade="all, delete-orphan"
+    )
     masteries: Mapped[List["TopicMastery"]] = relationship(
         "TopicMastery", back_populates="user", cascade="all, delete-orphan"
     )
@@ -214,12 +217,38 @@ class Question(Base):
     attempts: Mapped[List["PracticeAttempt"]] = relationship("PracticeAttempt", back_populates="question")
 
 
+class PracticeSession(Base):
+    """Interactive diagnostic practice session tracking question bundle and lifecycle state."""
+
+    __tablename__ = "practice_sessions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    session_id: Mapped[str] = mapped_column(String(64), unique=True, index=True, nullable=False)
+    user_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    topic: Mapped[str] = mapped_column(String(100), nullable=False)
+    difficulty: Mapped[str] = mapped_column(String(20), default="all", nullable=False)
+    total_questions: Mapped[int] = mapped_column(Integer, default=5, nullable=False)
+    question_ids: Mapped[List[int]] = mapped_column(JSON, default=list, nullable=False)
+    current_index: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    status: Mapped[str] = mapped_column(String(30), default="in_progress", nullable=False)
+    score: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
+    time_limit_seconds: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    # Relationships
+    user: Mapped["User"] = relationship("User", back_populates="practice_sessions")
+
+
 class PracticeAttempt(Base):
     """Log of a user answer attempt on a practice question."""
 
     __tablename__ = "practice_attempts"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    session_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, index=True)
     user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )
