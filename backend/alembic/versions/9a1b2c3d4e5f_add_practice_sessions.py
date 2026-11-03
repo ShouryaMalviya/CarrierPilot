@@ -57,3 +57,4 @@ def downgrade() -> None:
         batch_op.drop_index(batch_op.f('ix_practice_sessions_id'))
 
     op.drop_table('practice_sessions')
+

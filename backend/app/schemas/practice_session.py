@@ -66,3 +66,4 @@ class PracticeSessionListResponse(BaseModel):
     total: int
     skip: int
     limit: int
+

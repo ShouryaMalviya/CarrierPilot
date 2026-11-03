@@ -183,3 +183,4 @@ def list_user_sessions(
     ).all()
 
     return list(sessions), total
+
