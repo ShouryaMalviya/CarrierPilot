@@ -286,3 +286,4 @@ def test_complete_match_all_skills_present(client: TestClient):
     # No high-priority recommendations
     high_recs = [r for r in data["recommendations"] if r["priority"] == "high"]
     assert len(high_recs) == 0
+
