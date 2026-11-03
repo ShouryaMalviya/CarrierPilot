@@ -1,0 +1,427 @@
+[
+  {
+    "topic": "Python",
+    "difficulty": "easy",
+    "question_type": "mcq",
+    "prompt": "Which of the following built-in Python data types is mutable?",
+    "options": [
+      {"id": "A", "text": "tuple"},
+      {"id": "B", "text": "str"},
+      {"id": "C", "text": "list"},
+      {"id": "D", "text": "frozenset"}
+    ],
+    "answer_key": "C",
+    "explanation": "In Python, lists are mutable, meaning their contents can be modified in-place using methods like append(), extend(), or index assignment without altering their object identity. Tuples, strings (str), and frozensets are immutable; any modification creates a new object in memory.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Python",
+    "difficulty": "easy",
+    "question_type": "code_snippet",
+    "prompt": "What is the primary memory and evaluation difference between a list comprehension `[x*2 for x in data]` and a generator expression `(x*2 for x in data)`?",
+    "options": [
+      {"id": "A", "text": "The generator expression executes faster for small collections and returns a tuple."},
+      {"id": "B", "text": "The list comprehension evaluates lazily on each iteration, whereas the generator expression allocates the full list in memory."},
+      {"id": "C", "text": "The list comprehension constructs the entire collection in memory eagerly, whereas the generator produces items on-demand via an iterator with O(1) auxiliary memory."},
+      {"id": "D", "text": "There is no difference in memory consumption; they are syntactic synonyms."}
+    ],
+    "answer_key": "C",
+    "explanation": "List comprehensions compute all values eagerly and allocate contiguous memory to store the full list immediately. In contrast, generator expressions return a generator iterator that computes each item lazily on demand when `next()` is called, maintaining O(1) auxiliary memory regardless of dataset size.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Python",
+    "difficulty": "medium",
+    "question_type": "mcq",
+    "prompt": "How does CPython's Global Interpreter Lock (GIL) influence multi-threaded application performance?",
+    "options": [
+      {"id": "A", "text": "It prevents multiple OS threads from executing Python bytecode simultaneously across multiple CPU cores, restricting CPU-bound speedup."},
+      {"id": "B", "text": "It blocks I/O-bound threads from yielding execution while waiting for network sockets or disk reads."},
+      {"id": "C", "text": "It restricts multiprocessing by forbidding child processes from accessing separate address spaces."},
+      {"id": "D", "text": "It automatically converts multi-threaded programs into asynchronous coroutines."}
+    ],
+    "answer_key": "A",
+    "explanation": "The GIL is a mutex that protects access to Python objects, preventing multiple native threads from executing CPython bytecode simultaneously. Consequently, multi-threading in CPython provides concurrency for I/O-bound tasks (where threads release the GIL during I/O waits) but does not accelerate CPU-bound workloads across multiple CPU cores. Multi-processing or C-extensions are required for CPU parallelism.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Python",
+    "difficulty": "medium",
+    "question_type": "code_snippet",
+    "prompt": "When authoring a function decorator in Python, why is it considered best practice to decorate the inner wrapper function with `@functools.wraps(func)`?",
+    "options": [
+      {"id": "A", "text": "To prevent the decorator from executing during module import time."},
+      {"id": "B", "text": "To preserve the original function's introspection metadata, such as `__name__`, `__doc__`, and signature annotations."},
+      {"id": "C", "text": "To enforce type hinting validation at runtime."},
+      {"id": "D", "text": "To ensure the decorated function runs asynchronously on an event loop."}
+    ],
+    "answer_key": "B",
+    "explanation": "`@functools.wraps` copies attributes such as `__name__`, `__doc__`, `__module__`, and `__annotations__` from the decorated function to the wrapper function. Without it, debugging, documentation tools, and reflection see the generic wrapper's name and docstring instead of the underlying target function.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Python",
+    "difficulty": "hard",
+    "question_type": "mcq",
+    "prompt": "In Python 3.6+, what is the modern idiomatic alternative to creating a custom Metaclass for class registration and subclass initialization validation?",
+    "options": [
+      {"id": "A", "text": "The `__new__` dunder method on instances."},
+      {"id": "B", "text": "The `__init_subclass__` classmethod hook defined on the parent class."},
+      {"id": "C", "text": "The `inspect.signature` wrapper."},
+      {"id": "D", "text": "The `__post_init__` method from the dataclasses module."}
+    ],
+    "answer_key": "B",
+    "explanation": "PEP 487 introduced `__init_subclass__`, which is automatically called whenever a containing class is subclassed. It provides a simple, readable mechanism to customize class creation, register subclasses, and validate subclass attributes without the syntactic overhead and metaclass conflict complexities of custom metaclasses.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Data Structures",
+    "difficulty": "easy",
+    "question_type": "mcq",
+    "prompt": "What is the average-case time complexity of searching for an element in a balanced Hash Map compared to an unsorted array of size N?",
+    "options": [
+      {"id": "A", "text": "Hash Map: O(log N), Unsorted Array: O(N)"},
+      {"id": "B", "text": "Hash Map: O(1), Unsorted Array: O(N)"},
+      {"id": "C", "text": "Hash Map: O(N), Unsorted Array: O(1)"},
+      {"id": "D", "text": "Hash Map: O(1), Unsorted Array: O(log N)"}
+    ],
+    "answer_key": "B",
+    "explanation": "A hash map with a well-distributed hash function provides average O(1) constant time lookup via key hashing and bucket addressing. An unsorted array requires linear search through elements one by one, resulting in O(N) average and worst-case time complexity.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Data Structures",
+    "difficulty": "easy",
+    "question_type": "mcq",
+    "prompt": "Which abstract data structure operates on a Last-In, First-Out (LIFO) discipline, making it ideal for recursive call stack management and parenthesis matching?",
+    "options": [
+      {"id": "A", "text": "Queue"},
+      {"id": "B", "text": "Stack"},
+      {"id": "C", "text": "Binary Heap"},
+      {"id": "D", "text": "Circular Buffer"}
+    ],
+    "answer_key": "B",
+    "explanation": "A Stack adheres strictly to the Last-In, First-Out (LIFO) policy, where the most recently pushed element is the first to be popped. This directly mirrors activation records on function call stacks and balanced symbol/bracket validation algorithms. Queues operate on FIFO (First-In, First-Out).",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Data Structures",
+    "difficulty": "medium",
+    "question_type": "mcq",
+    "prompt": "What is the time and space complexity of Floyd's Cycle Detection Algorithm (Tortoise and Hare) for detecting a cycle in a singly linked list?",
+    "options": [
+      {"id": "A", "text": "Time: O(N), Auxiliary Space: O(1)"},
+      {"id": "B", "text": "Time: O(N log N), Auxiliary Space: O(N)"},
+      {"id": "C", "text": "Time: O(N^2), Auxiliary Space: O(1)"},
+      {"id": "D", "text": "Time: O(N), Auxiliary Space: O(N)"}
+    ],
+    "answer_key": "A",
+    "explanation": "Floyd's algorithm advances two pointers at different speeds (slow by 1 step, fast by 2 steps). If a loop exists, the fast pointer will lap and meet the slow pointer within O(N) steps. Because it only maintains two pointer references, it uses O(1) auxiliary space, unlike a hash set approach which requires O(N) extra space.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Data Structures",
+    "difficulty": "medium",
+    "question_type": "mcq",
+    "prompt": "In an AVL tree, what balance factor threshold triggers tree rotations during node insertion or deletion?",
+    "options": [
+      {"id": "A", "text": "When the difference between the heights of the left and right subtrees exceeds 1 (balance factor becomes -2 or +2)."},
+      {"id": "B", "text": "When the total number of left nodes exceeds right nodes by more than 2."},
+      {"id": "C", "text": "When the tree depth exceeds 2 * log2(N)."},
+      {"id": "D", "text": "When two consecutive red nodes appear along any root-to-leaf path."}
+    ],
+    "answer_key": "A",
+    "explanation": "An AVL tree is a strictly height-balanced Binary Search Tree where for every node, the height difference between the left and right subtrees (the balance factor) must remain in {-1, 0, +1}. If an operation causes the balance factor to become +2 or -2, single or double rotations (LL, RR, LR, RL) are executed to restore balance.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Data Structures",
+    "difficulty": "hard",
+    "question_type": "mcq",
+    "prompt": "Which algorithm finds a valid topological ordering in a Directed Acyclic Graph (DAG) by iteratively removing nodes with in-degree 0, and can detect cycles if the output length is less than V?",
+    "options": [
+      {"id": "A", "text": "Dijkstra's Shortest Path Algorithm"},
+      {"id": "B", "text": "Kahn's Algorithm (BFS-based Topological Sort)"},
+      {"id": "C", "text": "Prim's Minimum Spanning Tree Algorithm"},
+      {"id": "D", "text": "Kosaraju's Strongly Connected Components Algorithm"}
+    ],
+    "answer_key": "B",
+    "explanation": "Kahn's Algorithm initializes in-degrees for all vertices and enqueues vertices with in-degree 0. As vertices are dequeued and added to the topological order, their outgoing edges are removed, decrementing neighboring in-degrees. If the final ordering contains fewer than V vertices, the graph contains at least one directed cycle.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "SQL",
+    "difficulty": "easy",
+    "question_type": "mcq",
+    "prompt": "What is the key syntactic and logical difference between the SQL `WHERE` clause and the `HAVING` clause?",
+    "options": [
+      {"id": "A", "text": "`WHERE` filters individual rows before aggregation, whereas `HAVING` filters aggregated groups produced by `GROUP BY`."},
+      {"id": "B", "text": "`HAVING` filters rows before sorting, whereas `WHERE` can only be used with subqueries."},
+      {"id": "C", "text": "`WHERE` supports aggregate functions like `COUNT()`, whereas `HAVING` does not."},
+      {"id": "D", "text": "There is no difference; `HAVING` is simply an ANSI alias for `WHERE`."}
+    ],
+    "answer_key": "A",
+    "explanation": "In standard SQL query processing order: FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY. The `WHERE` clause filters individual rows prior to grouping. Aggregate expressions like `COUNT()`, `SUM()`, or `AVG()` cannot appear in a `WHERE` clause; they must be evaluated and filtered in the `HAVING` clause after grouping.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "SQL",
+    "difficulty": "easy",
+    "question_type": "mcq",
+    "prompt": "Given two tables A and B, which JOIN returns all records from table A and the matched records from table B, inserting NULLs for B's columns when no match exists?",
+    "options": [
+      {"id": "A", "text": "INNER JOIN"},
+      {"id": "B", "text": "LEFT OUTER JOIN"},
+      {"id": "C", "text": "CROSS JOIN"},
+      {"id": "D", "text": "FULL OUTER JOIN excluding common keys"}
+    ],
+    "answer_key": "B",
+    "explanation": "A `LEFT OUTER JOIN` (or simply `LEFT JOIN`) preserves all rows from the left table (A). If a matching row exists in the right table (B) based on the join predicate, B's columns are populated; otherwise, NULL is supplied for each of B's columns.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "SQL",
+    "difficulty": "medium",
+    "question_type": "mcq",
+    "prompt": "Which transaction isolation anomaly occurs when Transaction 1 reads a row, Transaction 2 updates and commits that row, and Transaction 1 rereads the same row finding different values?",
+    "options": [
+      {"id": "A", "text": "Dirty Read"},
+      {"id": "B", "text": "Non-Repeatable Read"},
+      {"id": "C", "text": "Phantom Read"},
+      {"id": "D", "text": "Lost Update"}
+    ],
+    "answer_key": "B",
+    "explanation": "A Non-Repeatable Read occurs when a transaction reads the same row twice and obtains different data because another transaction committed an update to that row between the reads. A Dirty Read involves uncommitted data. A Phantom Read involves new rows inserted by another transaction that match a range query.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "SQL",
+    "difficulty": "medium",
+    "question_type": "code_snippet",
+    "prompt": "What is the primary difference between window functions `RANK()` and `DENSE_RANK()` in SQL when handling tie values?",
+    "options": [
+      {"id": "A", "text": "`RANK()` skips subsequent rank numbers following a tie, whereas `DENSE_RANK()` assigns consecutive integers without gaps."},
+      {"id": "B", "text": "`DENSE_RANK()` skips subsequent ranks, whereas `RANK()` produces duplicate ranks at random."},
+      {"id": "C", "text": "`RANK()` only works with numeric columns, whereas `DENSE_RANK()` supports strings."},
+      {"id": "D", "text": "`RANK()` requires an `OVER (PARTITION BY ...)` clause, whereas `DENSE_RANK()` does not."}
+    ],
+    "answer_key": "A",
+    "explanation": "When ties occur in the `ORDER BY` specification of a window function, both assign the same rank to identical values. However, `RANK()` leaves gaps in the sequence corresponding to the number of duplicates (e.g., 1, 2, 2, 4), while `DENSE_RANK()` maintains strictly consecutive numbering without gaps (e.g., 1, 2, 2, 3).",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "SQL",
+    "difficulty": "hard",
+    "question_type": "mcq",
+    "prompt": "Under the leftmost prefix rule for composite B-Tree indexes on columns `(A, B, C)`, which of the following query `WHERE` clauses CANNOT utilize the index?",
+    "options": [
+      {"id": "A", "text": "WHERE A = 5 AND B > 10"},
+      {"id": "B", "text": "WHERE A = 5"},
+      {"id": "C", "text": "WHERE B = 10 AND C = 20"},
+      {"id": "D", "text": "WHERE A = 5 AND B = 10 AND C = 20"}
+    ],
+    "answer_key": "C",
+    "explanation": "A composite B-Tree index on (A, B, C) organizes keys lexicographically starting strictly from the leading column A. A query filtering only on columns (B, C) without specifying leading column A cannot traverse the B-Tree index hierarchy and must resort to a full table scan or an index full scan.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Web Development",
+    "difficulty": "easy",
+    "question_type": "mcq",
+    "prompt": "According to the HTTP/1.1 specification (RFC 7231), which of the following HTTP methods is defined as idempotent?",
+    "options": [
+      {"id": "A", "text": "POST"},
+      {"id": "B", "text": "DELETE"},
+      {"id": "C", "text": "CONNECT"},
+      {"id": "D", "text": "PATCH"}
+    ],
+    "answer_key": "B",
+    "explanation": "An HTTP method is idempotent if making multiple identical requests has the same intended effect on the server state as a single request. `GET`, `HEAD`, `PUT`, and `DELETE` are idempotent by specification. `POST` and `PATCH` are non-idempotent by default because repeated calls may append multiple resources or modify state cumulatively.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Web Development",
+    "difficulty": "easy",
+    "question_type": "mcq",
+    "prompt": "Why is the `HttpOnly` flag recommended when issuing session or authentication cookies from a backend service?",
+    "options": [
+      {"id": "A", "text": "It forces cookie transmission over HTTPS exclusively."},
+      {"id": "B", "text": "It prevents client-side scripts (such as JavaScript `document.cookie`) from accessing the cookie, mitigating Cross-Site Scripting (XSS) token theft."},
+      {"id": "C", "text": "It prevents the cookie from being sent in cross-site requests, mitigating CSRF."},
+      {"id": "D", "text": "It compresses the cookie payload to minimize network latency."}
+    ],
+    "answer_key": "B",
+    "explanation": "The `HttpOnly` flag instructs the browser that the cookie must not be accessible via client-side scripts such as `document.cookie`. This directly mitigates token theft via Cross-Site Scripting (XSS) vulnerabilities. Note that `Secure` mandates HTTPS, and `SameSite` mitigates CSRF.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Web Development",
+    "difficulty": "medium",
+    "question_type": "mcq",
+    "prompt": "When a web browser executes a Cross-Origin Resource Sharing (CORS) preflight request, which HTTP method and header are sent by the browser before the actual request?",
+    "options": [
+      {"id": "A", "text": "GET method with `Accept-Origin`"},
+      {"id": "B", "text": "OPTIONS method with `Origin` and `Access-Control-Request-Method`"},
+      {"id": "C", "text": "HEAD method with `X-Forwarded-Host`"},
+      {"id": "D", "text": "POST method with `Sec-Fetch-Mode: cors`"}
+    ],
+    "answer_key": "B",
+    "explanation": "For non-simple cross-origin requests (e.g., using `PUT`, `DELETE`, or custom headers like `Authorization` with JSON content types), the browser automatically dispatches an `OPTIONS` preflight request containing `Origin`, `Access-Control-Request-Method`, and `Access-Control-Request-Headers` to confirm server permission before sending the actual payload.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Web Development",
+    "difficulty": "medium",
+    "question_type": "mcq",
+    "prompt": "In React, why is it strongly discouraged to use dynamic array indices (e.g., `key={index}`) as list item keys when items can be inserted, deleted, or reordered?",
+    "options": [
+      {"id": "A", "text": "It causes compile-time TypeScript type checking errors."},
+      {"id": "B", "text": "It can cause component state bugs and degraded rendering performance during reconciliation because indices shift and match wrong DOM nodes."},
+      {"id": "C", "text": "React ignores numeric keys and defaults to random UUIDs."},
+      {"id": "D", "text": "Indices trigger immediate memory leaks in the browser Garbage Collector."}
+    ],
+    "answer_key": "B",
+    "explanation": "React uses the `key` prop during reconciliation to determine whether an element can be reused across renders. When using array indices, inserting or deleting an item shifts all subsequent indices, causing React to associate existing local state and DOM elements with completely different logical items.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "Web Development",
+    "difficulty": "hard",
+    "question_type": "mcq",
+    "prompt": "What causes a 'Hydration Mismatch' warning in Server-Side Rendered (SSR) modern web applications (such as Next.js)?",
+    "options": [
+      {"id": "A", "text": "The CSS bundle is loaded before the initial HTML document arrives."},
+      {"id": "B", "text": "The server-rendered pre-generated HTML DOM tree differs from the initial client-side React virtual DOM tree during hydration."},
+      {"id": "C", "text": "The HTTP server returns a 304 Not Modified status code."},
+      {"id": "D", "text": "The client browser does not support Service Workers."}
+    ],
+    "answer_key": "B",
+    "explanation": "Hydration is the process where client-side JavaScript attaches event listeners and state to the server-rendered HTML. A hydration mismatch occurs when the server-rendered HTML and client-rendered virtual DOM do not match (e.g., due to client-only values like `window.innerWidth`, `new Date()`, or conditional browser feature checks during the initial render).",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "DevOps",
+    "difficulty": "easy",
+    "question_type": "mcq",
+    "prompt": "What is the primary architectural difference between an OCI Docker container and a traditional Hypervisor-based Virtual Machine (VM)?",
+    "options": [
+      {"id": "A", "text": "Containers share the host operating system kernel and isolate user space processes, whereas VMs run a complete guest OS on top of hypervisor hardware virtualization."},
+      {"id": "B", "text": "Containers require dedicated hardware chipsets, while VMs run inside the browser."},
+      {"id": "C", "text": "VMs cannot execute Linux workloads, whereas Docker only supports Linux."},
+      {"id": "D", "text": "Containers cannot be networked or assigned IP addresses."}
+    ],
+    "answer_key": "A",
+    "explanation": "Containers achieve lightweight isolation via Linux kernel namespaces and cgroups, sharing the host OS kernel with minimal overhead and instantaneous startup. Traditional VMs virtualize physical hardware via a Hypervisor (Type 1 or 2), requiring each VM to boot a full guest operating system with dedicated kernel memory.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "DevOps",
+    "difficulty": "easy",
+    "question_type": "mcq",
+    "prompt": "What is the fundamental difference in commit history between `git merge --no-ff feature` and `git rebase main` on a feature branch?",
+    "options": [
+      {"id": "A", "text": "`merge` rewrites commit hashes, whereas `rebase` creates a distinct merge commit."},
+      {"id": "B", "text": "`merge` preserves the exact branched topology with a dedicated merge commit, whereas `rebase` replays feature commits on top of the target base, creating a linear history with new commit hashes."},
+      {"id": "C", "text": "`rebase` deletes uncommitted working tree files, whereas `merge` stages them."},
+      {"id": "D", "text": "`merge` only works with remote repositories; `rebase` is exclusively local."}
+    ],
+    "answer_key": "B",
+    "explanation": "`git merge` creates a new merge commit combining both branch histories and preserving the branching graph structure. `git rebase` reapplies each feature commit one by one on top of the latest base branch, producing a clean linear history but generating new commit hashes for all replayed commits.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "DevOps",
+    "difficulty": "medium",
+    "question_type": "mcq",
+    "prompt": "What is the primary operational security and size advantage of utilizing multi-stage builds in a Dockerfile for compiled or bundled applications?",
+    "options": [
+      {"id": "A", "text": "It allows images to share volume storage across containers on different hosts."},
+      {"id": "B", "text": "It isolates heavy build tools, compilers, and source files in intermediate stages, copying only the final compiled artifact into a minimal slim runtime base image."},
+      {"id": "C", "text": "It disables network access during image execution."},
+      {"id": "D", "text": "It encrypts the Docker daemon socket."}
+    ],
+    "answer_key": "B",
+    "explanation": "Multi-stage Docker builds allow developers to define multiple `FROM` statements in a single Dockerfile. Compilers, SDKs, test dependencies, and temporary build caches are kept in early stages, and only the final compiled binary or production bundle is copied into a clean minimal runtime image (e.g. `alpine` or `distroless`), slashing image size and eliminating build-tool vulnerability surface.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "DevOps",
+    "difficulty": "medium",
+    "question_type": "mcq",
+    "prompt": "In Kubernetes, which controller resource is designed to provide declarative updates for Pods and ReplicaSets, managing rolling rollouts and rollbacks?",
+    "options": [
+      {"id": "A", "text": "ConfigMap"},
+      {"id": "B", "text": "Deployment"},
+      {"id": "C", "text": "Ingress"},
+      {"id": "D", "text": "DaemonSet"}
+    ],
+    "answer_key": "B",
+    "explanation": "A Kubernetes `Deployment` controller manages declarative updates for stateless Pods and ReplicaSets. It provides automated zero-downtime rolling updates, pause/resume mechanisms, revision history tracking, and rollback capabilities to previous revisions via `kubectl rollout undo`.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  },
+  {
+    "topic": "DevOps",
+    "difficulty": "hard",
+    "question_type": "mcq",
+    "prompt": "What distinguishes a Canary Deployment strategy from a Blue-Green Deployment strategy during production releases?",
+    "options": [
+      {"id": "A", "text": "Canary rolls out the new version to a small percentage of live traffic incrementally to validate metrics before full cutover, whereas Blue-Green maintains two identical environments and switches 100% of traffic all at once."},
+      {"id": "B", "text": "Blue-Green deploys only to development environments, whereas Canary deploys exclusively to production."},
+      {"id": "C", "text": "Canary requires complete cluster downtime during deployment, whereas Blue-Green never requires downtime."},
+      {"id": "D", "text": "Blue-Green deploys code directly without container images."}
+    ],
+    "answer_key": "A",
+    "explanation": "In Blue-Green deployment, two identical production environments exist (Blue = live, Green = idle/new). Once Green is verified, the load balancer or router flips 100% of traffic instantly to Green. In Canary deployment, the new release is introduced alongside the existing version and exposed to a tiny percentage of production traffic (e.g., 5%), monitoring error rates and telemetry before gradually scaling up to 100%.",
+    "rubric_version": "1.0.0",
+    "is_synthetic": true,
+    "is_active": true
+  }
+]

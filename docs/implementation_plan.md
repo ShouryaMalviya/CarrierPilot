@@ -186,7 +186,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **14** | Optional semantic similarity with fallback | **PASS** | Lazy-load SentenceTransformers, transparent lexical fallback, mode status API passing (94/94 tests). |
 | **15** | Hybrid ranking & explainable results | **PASS** | Hybrid score weighting, evidence snippet citations, learning recommendations passing (97/97 tests). |
 | **16** | Matching evaluation dataset & notebook | **PASS** | Frozen benchmark dataset, MRR/Recall/nDCG evaluation harness, notebook passing (107/107 tests). |
-| **17** | Question bank model & curated seed content | NOT RUN | Scheduled. |
+| **17** | Question bank model & curated seed content | **PASS** | Curated 25 MCQ fixtures across 5 domains, answer leakage guards, topic taxonomy (120/120 tests). |
 | **18** | Diagnostic practice API | NOT RUN | Scheduled. |
 | **19** | Attempt recording & grading | NOT RUN | Scheduled. |
 | **20** | Transparent mastery estimation | NOT RUN | Scheduled. |
