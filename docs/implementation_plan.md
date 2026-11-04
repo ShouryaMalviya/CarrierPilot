@@ -192,7 +192,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **20** | Transparent mastery estimation | **PASS** | Exponential decay (gamma=0.85), difficulty scaling, reason codes, audit breakdown (146/146 tests). |
 | **21** | Next-question selection & study plan | **PASS** | Rule-based adaptive selection, structured study plan roadmap, recommendation audits (152/152 tests). |
 | **22** | Progress API & dashboard aggregates | **PASS** | Streak calculation, 14-day activity telemetry, placement readiness index, topic mastery status cards (159/159 tests). |
-| **23** | Mock interview session workflow | NOT RUN | Scheduled. |
+| **23** | Mock interview session workflow | **PASS** | Typed interview sessions, curated question catalog, response submissions, session state transitions, ownership isolation (176/176 tests). |
 | **24** | Rubric-based feedback service | NOT RUN | Scheduled. |
 | **25** | Optional LLM provider adapter & safety | NOT RUN | Scheduled. |
 | **26** | Interview feedback quality & audit trail | NOT RUN | Scheduled. |

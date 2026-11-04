@@ -1,0 +1,257 @@
+[
+  {
+    "id": "int-fs-sd-01",
+    "role": "Full-Stack Engineer",
+    "competency": "System Design",
+    "title": "Design a Real-Time Collaborative Document Editor",
+    "question_text": "Design a web-based collaborative document editor (similar to Google Docs) where multiple users can concurrently edit documents with low latency. Describe your client-server communication protocol, synchronization strategy (e.g., CRDT vs. Operational Transformation), state persistence, and how you handle network disconnects and offline edits.",
+    "guidelines": "Structure your answer by outlining: 1) System architecture and protocol selection (WebSockets/SSE), 2) Concurrency control and conflict resolution algorithm, 3) Storage and snapshot strategy, 4) Edge cases such as packet loss, reconnection, and high churn.",
+    "key_concepts": [
+      "WebSockets",
+      "Operational Transformation (OT)",
+      "Conflict-free Replicated Data Types (CRDT)",
+      "Document Snapshotting",
+      "Optimistic UI Updates",
+      "Disconnection Recovery"
+    ],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "int-fs-ca-01",
+    "role": "Full-Stack Engineer",
+    "competency": "Coding & Algorithms",
+    "title": "Implement an In-Memory Key-Value Store with TTL",
+    "question_text": "Explain how you would design and implement an in-memory key-value cache supporting get(key), set(key, value, ttl_seconds), and delete(key). Detail your data structures for fast lookups, expiration tracking, thread-safety or concurrency control, and eviction policies when memory bounds are reached.",
+    "guidelines": "Discuss: 1) Lookup data structure (hash map), 2) TTL tracking (min-heap or doubly linked list), 3) Lazy vs. active expiration mechanisms, 4) Thread synchronization or event loop concurrency.",
+    "key_concepts": [
+      "Hash Map",
+      "Min-Heap / Priority Queue",
+      "TTL Expiration",
+      "Lazy vs Active Eviction",
+      "LRU / LFU Eviction",
+      "Concurrency & Mutex Locks"
+    ],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "int-fs-bl-01",
+    "role": "Full-Stack Engineer",
+    "competency": "Behavioral & Leadership",
+    "title": "Managing Technical Debt vs. Feature Deadlines",
+    "question_text": "Describe a scenario where rapid product delivery accumulated significant technical debt that degraded system reliability or velocity. How did you identify the debt, communicate trade-offs with non-technical product managers, and structure an incremental remediation roadmap without stalling all feature work?",
+    "guidelines": "Use the STAR method (Situation, Task, Action, Result). Quantify the impact of the technical debt, describe specific stakeholder alignment techniques, and provide tangible outcomes.",
+    "key_concepts": [
+      "STAR Method",
+      "Stakeholder Communication",
+      "Technical Debt Quantification",
+      "Incremental Refactoring",
+      "Business Value Alignment",
+      "Risk Mitigation"
+    ],
+    "difficulty": "entry"
+  },
+  {
+    "id": "int-fs-db-01",
+    "role": "Full-Stack Engineer",
+    "competency": "Database & SQL",
+    "title": "Optimizing Read-Heavy Product Catalogs with Caching & Read Replicas",
+    "question_text": "An e-commerce product catalog receives 95% read traffic and 5% write traffic. During flash sales, read latencies spike to unacceptable levels. How would you redesign the persistence and caching layers using read replicas, Redis/Memcached, and cache invalidation patterns to maintain sub-50ms response times?",
+    "guidelines": "Cover: 1) Database topology (primary-replica), 2) Caching patterns (Cache-Aside, Write-Through), 3) Cache stampede prevention (mutex locks, probabilistic early expiration), 4) Handling replication lag.",
+    "key_concepts": [
+      "Read Replicas",
+      "Cache-Aside Pattern",
+      "Cache Stampede / Thundering Herd",
+      "Replication Lag",
+      "Cache Invalidation",
+      "Connection Pooling"
+    ],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "int-be-sd-01",
+    "role": "Backend Engineer",
+    "competency": "System Design",
+    "title": "Design a High-Throughput Distributed Notification Engine",
+    "question_text": "Design a backend notification platform capable of delivering millions of push notifications, SMS messages, and emails daily across third-party gateways (e.g., APNS, FCM, SendGrid, Twilio). Address message deduplication, rate limiting, provider failures, priority queuing, and delivery observability.",
+    "guidelines": "Detail: 1) Ingestion API and message queue broker (Kafka/RabbitMQ), 2) Worker pools and dispatchers, 3) Idempotency keys and deduplication stores, 4) Dead-letter queues and backoff retry logic.",
+    "key_concepts": [
+      "Message Queuing",
+      "Idempotency",
+      "Dead Letter Queue (DLQ)",
+      "Exponential Backoff",
+      "Rate Limiting",
+      "Provider Fallback"
+    ],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "int-be-ca-01",
+    "role": "Backend Engineer",
+    "competency": "Coding & Algorithms",
+    "title": "Distributed Rate Limiter Implementation",
+    "question_text": "Compare and evaluate common rate-limiting algorithms (Token Bucket, Leaky Bucket, Sliding Window Log, Sliding Window Counter) for protecting public microservice APIs. Explain how you would implement a distributed Sliding Window Counter using Redis, including addressing concurrency race conditions and multi-region synchronization.",
+    "guidelines": "Analyze time/space trade-offs of each algorithm. Provide Redis data structure choices (e.g. sorted sets vs hashes with Lua scripts) and explain atomicity guarantees.",
+    "key_concepts": [
+      "Token Bucket",
+      "Sliding Window Counter",
+      "Redis Lua Scripting",
+      "Race Conditions & Atomicity",
+      "Distributed Clocks & Latency",
+      "HTTP 429 & Retry-After Headers"
+    ],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "int-be-db-01",
+    "role": "Backend Engineer",
+    "competency": "Database & SQL",
+    "title": "Zero-Downtime Database Schema Migrations at Scale",
+    "question_text": "You need to rename a widely-queried column and change its data type from integer to bigint on a table with 100 million rows in production without taking any application downtime or locking the database for extended periods. Detail your phased migration plan across application releases.",
+    "guidelines": "Break down the phased expand-and-contract pattern: 1) Schema addition, 2) Dual writing and backfill, 3) Read switching, 4) Cleanup of old schema and code.",
+    "key_concepts": [
+      "Expand and Contract Pattern",
+      "Dual Writing",
+      "Background Backfill",
+      "Table Locks & Concurrency",
+      "Backward Compatibility",
+      "Zero-Downtime Deployment"
+    ],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "int-be-dc-01",
+    "role": "Backend Engineer",
+    "competency": "DevOps & Cloud",
+    "title": "Microservices Resiliency, Circuit Breakers, and Graceful Degradation",
+    "question_text": "When a downstream microservice starts failing or exhibiting high tail latencies, cascading failures can bring down the entire system. Explain the Circuit Breaker pattern states (Closed, Open, Half-Open), how timeout budgets and bulkheads prevent resource exhaustion, and how fallback mechanisms deliver graceful degradation.",
+    "guidelines": "Walk through: 1) Circuit Breaker state machine transitions, 2) Bulkhead isolation, 3) Distributed tracing for latency isolation, 4) Realistic fallback responses.",
+    "key_concepts": [
+      "Circuit Breaker Pattern",
+      "Half-Open State",
+      "Bulkhead Isolation",
+      "Timeout Budgets",
+      "Cascading Failure Prevention",
+      "Graceful Degradation"
+    ],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "int-fe-sd-01",
+    "role": "Frontend Engineer",
+    "competency": "System Design",
+    "title": "Architecting a Scalable Micro-Frontend Architecture",
+    "question_text": "An enterprise web portal with 5 independent engineering teams is moving from a monolithic React application to a Micro-Frontend architecture. Discuss the pros and cons of build-time composition vs. runtime composition (e.g. Webpack Module Federation), shared dependency versioning, CSS isolation, and global state synchronization.",
+    "guidelines": "Analyze: 1) Module Federation vs IFrames vs Web Components, 2) Shared libraries and duplicate bundle avoidance, 3) Cross-microfrontend event communication, 4) CI/CD independent deployment.",
+    "key_concepts": [
+      "Module Federation",
+      "Runtime vs Build-time Composition",
+      "CSS Namespacing & Shadow DOM",
+      "Shared Dependency Singleton",
+      "Event Bus / Custom Events",
+      "Independent Deployability"
+    ],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "int-fe-ca-01",
+    "role": "Frontend Engineer",
+    "competency": "Coding & Algorithms",
+    "title": "Virtual DOM Rendering and Infinite Scrolling List Optimization",
+    "question_text": "Rendering 10,000 complex feed cards in a web browser causes jank, high memory usage, and frame drops below 60fps. Detail how windowing (virtual scrolling) works under the hood: calculating visible items, dynamic item height measurements, DOM recycling, and avoiding layout thrashing.",
+    "guidelines": "Walk through: 1) Scroll offset math and index calculation, 2) Overscan buffers to avoid white flashes, 3) Handling dynamic row heights with resize observers, 4) RequestAnimationFrame and passive listeners.",
+    "key_concepts": [
+      "Virtual List / Windowing",
+      "DOM Node Recycling",
+      "Layout Thrashing",
+      "Overscan Padding",
+      "ResizeObserver",
+      "60fps Animation Budget"
+    ],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "int-fe-bl-01",
+    "role": "Frontend Engineer",
+    "competency": "Behavioral & Leadership",
+    "title": "Championing Web Accessibility (WCAG 2.1 AA) Across Engineering Teams",
+    "question_text": "Your team is building a student-facing dashboard that currently fails accessibility audits. Describe how you would advocate for accessibility compliance, integrate automated testing (e.g., axe-core) into the CI pipeline, and educate design and engineering peers on keyboard navigation, screen reader ARIA semantics, and color contrast.",
+    "guidelines": "Use the STAR method. Detail specific technical remedies (focus rings, semantic tags, skip links) and organizational change management.",
+    "key_concepts": [
+      "WCAG 2.1 AA Standards",
+      "ARIA Semantics",
+      "Keyboard Navigation & Focus Traps",
+      "Automated CI Auditing (axe-core)",
+      "Design System Accessibility",
+      "Cross-functional Collaboration"
+    ],
+    "difficulty": "entry"
+  },
+  {
+    "id": "int-ds-sd-01",
+    "role": "Data Scientist",
+    "competency": "System Design",
+    "title": "Design a Real-Time Feature Store for Production ML Inference",
+    "question_text": "In production machine learning systems, online features for low-latency inference often drift from historical training features. Design an end-to-end Feature Store architecture that bridges offline batch storage (for training) and online low-latency storage (for real-time scoring), ensuring point-in-time correctness to prevent data leakage.",
+    "guidelines": "Address: 1) Dual storage engines (e.g. Redis for online, Parquet/Delta Lake for offline), 2) Streaming feature updates with Kafka/Flink, 3) Time-travel queries and point-in-time joins, 4) Feature schema validation and monitoring.",
+    "key_concepts": [
+      "Feature Store",
+      "Point-in-Time Correctness",
+      "Data Leakage Prevention",
+      "Online vs Offline Storage",
+      "Feature Drift Detection",
+      "Streaming Feature Pipeline"
+    ],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "int-ds-ca-01",
+    "role": "Data Scientist",
+    "competency": "Coding & Algorithms",
+    "title": "Handling Extreme Class Imbalance and Metric Evaluation",
+    "question_text": "You are training a fraud detection model where only 0.1% of transactions are fraudulent. A standard logistic regression model achieves 99.9% accuracy by predicting all transactions as non-fraudulent. Discuss data-level remedies (SMOTE, under-sampling), algorithm-level adjustments (focal loss, class weighting), and metric selection (PR-AUC vs ROC-AUC).",
+    "guidelines": "Explain: 1) Failure of standard accuracy, 2) Precision-Recall curves vs ROC curves in severe class imbalance, 3) Synthetic sampling trade-offs, 4) Setting optimal probability decision thresholds based on business cost matrices.",
+    "key_concepts": [
+      "Class Imbalance",
+      "PR-AUC vs ROC-AUC",
+      "SMOTE & Sub-sampling",
+      "Cost-Sensitive Learning / Class Weighting",
+      "Precision-Recall Trade-off",
+      "Confusion Matrix Evaluation"
+    ],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "int-do-dc-01",
+    "role": "DevOps Engineer",
+    "competency": "DevOps & Cloud",
+    "title": "Zero-Downtime Blue-Green vs. Canary Kubernetes Deployment Pipeline",
+    "question_text": "Compare Blue-Green deployments with Canary release strategies in Kubernetes environments. Explain how ingress controllers (e.g. NGINX, Traefik) or service meshes (e.g. Istio) manage traffic splitting, how automated health checks evaluate canary stability using Prometheus error budgets, and how automated rollback triggers prevent customer impact.",
+    "guidelines": "Detail: 1) Kubernetes service selectors vs ingress weights, 2) Canary progression stages (1% -> 10% -> 50% -> 100%), 3) Error budget SLO triggers for instant rollback, 4) State synchronization considerations during dual versions.",
+    "key_concepts": [
+      "Blue-Green Deployment",
+      "Canary Deployment",
+      "Traffic Splitting (Ingress / Service Mesh)",
+      "Prometheus SLO Metric Evaluation",
+      "Automated Rollback Triggers",
+      "Zero-Downtime Rollout"
+    ],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "int-do-bl-01",
+    "role": "DevOps Engineer",
+    "competency": "Behavioral & Leadership",
+    "title": "Leading a Blameless Postmortem After a Major Production Outage",
+    "question_text": "A misconfigured deployment caused a 45-minute cascading outage during peak traffic. As the incident commander, explain how you lead the subsequent postmortem review to foster psychological safety, uncover deep systemic vulnerabilities using the 5 Whys framework, and generate actionable prevention items without scapegoating individuals.",
+    "guidelines": "Use the STAR method. Contrast blameless retrospectives with punitive cultures, discuss concrete action item tracking (preventative engineering, runbook updates, canary testing), and executive communication.",
+    "key_concepts": [
+      "Blameless Postmortem",
+      "Psychological Safety",
+      "5 Whys Root Cause Analysis",
+      "Incident Commander Role",
+      "Actionable Remediation Items",
+      "Mean Time to Recovery (MTTR)"
+    ],
+    "difficulty": "entry"
+  }
+]
