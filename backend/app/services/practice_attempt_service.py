@@ -81,6 +81,14 @@ def grade_and_record_attempt(
 
     db.commit()
     db.refresh(attempt)
+
+    # Automatically refresh topic mastery in real time
+    try:
+        from app.services.mastery_service import update_user_topic_mastery
+        update_user_topic_mastery(db, user_id, question.topic)
+    except Exception:
+        pass
+
     return attempt, question
 
 

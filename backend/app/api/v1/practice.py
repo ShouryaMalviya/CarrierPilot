@@ -27,7 +27,13 @@ from app.schemas.question import (
     QuestionSeedResponse,
     TopicSummary,
 )
+from app.schemas.topic_mastery import (
+    MasteryCalculationExplanation,
+    TopicMasteryListResponse,
+    TopicMasteryOut,
+)
 from app.services import (
+    mastery_service,
     practice_attempt_service,
     practice_session_service,
     question_service,
@@ -376,5 +382,83 @@ def get_practice_attempt_stats(
 ) -> AttemptStatsSummary:
     """Compute aggregate accuracy, count, and duration statistics by topic and difficulty."""
     return practice_attempt_service.get_user_attempt_stats(db=db, user_id=current_user.id)
+
+
+# ==============================================================================
+# Transparent Topic Mastery Estimation Endpoints
+# ==============================================================================
+
+@router.get(
+    "/mastery",
+    response_model=TopicMasteryListResponse,
+    summary="Get transparent topic mastery estimates and aggregates",
+)
+def get_user_mastery_overview(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> TopicMasteryListResponse:
+    """Retrieve recent-weighted topic mastery scores [0, 100] with reason codes."""
+    records = mastery_service.get_user_topic_masteries(db, current_user.id)
+    items = [TopicMasteryOut.model_validate(r) for r in records]
+
+    if items:
+        avg_score = round(sum(it.mastery_score for it in items) / len(items), 1)
+        proficient = sum(1 for it in items if "TOPIC_PROFICIENT" in it.reason_codes)
+        needs_practice = sum(1 for it in items if "NEEDS_PRACTICE" in it.reason_codes)
+    else:
+        avg_score = 0.0
+        proficient = 0
+        needs_practice = 0
+
+    return TopicMasteryListResponse(
+        items=items,
+        overall_average_mastery=avg_score,
+        proficient_topics_count=proficient,
+        needs_practice_topics_count=needs_practice,
+    )
+
+
+@router.get(
+    "/mastery/{topic}",
+    response_model=MasteryCalculationExplanation,
+    summary="Get explainable step-by-step mathematical audit for a topic's mastery score",
+)
+def get_topic_mastery_audit(
+    topic: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> MasteryCalculationExplanation:
+    """Disclose exact formulas, recency weights (gamma=0.85), difficulty factors, and contributions."""
+    return mastery_service.explain_topic_mastery(
+        db=db,
+        user_id=current_user.id,
+        topic=topic,
+    )
+
+
+@router.post(
+    "/mastery/recalculate",
+    response_model=TopicMasteryListResponse,
+    summary="Force recalculation of all topic mastery scores for the current user",
+)
+def recalculate_user_mastery(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> TopicMasteryListResponse:
+    """Trigger on-demand recalculation across all domain topics."""
+    records = mastery_service.recalculate_all_masteries_for_user(db, current_user.id)
+    items = [TopicMasteryOut.model_validate(r) for r in records]
+
+    avg_score = round(sum(it.mastery_score for it in items) / len(items), 1) if items else 0.0
+    proficient = sum(1 for it in items if "TOPIC_PROFICIENT" in it.reason_codes)
+    needs_practice = sum(1 for it in items if "NEEDS_PRACTICE" in it.reason_codes)
+
+    return TopicMasteryListResponse(
+        items=items,
+        overall_average_mastery=avg_score,
+        proficient_topics_count=proficient,
+        needs_practice_topics_count=needs_practice,
+    )
+
 
 
