@@ -62,3 +62,4 @@ class RecommendationAuditOut(BaseModel):
     rationale: str
     reason_code: str
     created_at: datetime
+

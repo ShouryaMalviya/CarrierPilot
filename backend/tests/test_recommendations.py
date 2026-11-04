@@ -189,3 +189,4 @@ class TestAdaptiveRecommendations:
         assert client.get("/api/v1/practice/recommendations/next-question").status_code == 401
         assert client.get("/api/v1/practice/recommendations/study-plan").status_code == 401
         assert client.get("/api/v1/practice/recommendations/audits").status_code == 401
+
