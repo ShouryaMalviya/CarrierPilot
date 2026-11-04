@@ -58,3 +58,4 @@ class MasteryCalculationExplanation(BaseModel):
     reason_codes: List[str]
     attempt_contributions: List[AttemptWeightContribution]
     last_calculated_at: datetime
+

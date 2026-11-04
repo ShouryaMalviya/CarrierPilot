@@ -272,3 +272,4 @@ class TestMasteryServiceAndAPI:
         assert client.get("/api/v1/practice/mastery").status_code == 401
         assert client.get("/api/v1/practice/mastery/Python").status_code == 401
         assert client.post("/api/v1/practice/mastery/recalculate").status_code == 401
+

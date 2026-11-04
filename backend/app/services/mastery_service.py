@@ -249,3 +249,4 @@ def explain_topic_mastery(
         attempt_contributions=contributions,
         last_calculated_at=datetime.now(timezone.utc),
     )
+
