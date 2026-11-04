@@ -6,6 +6,13 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db
 from app.models import User
+from app.schemas.practice_attempt import (
+    AttemptFeedback,
+    AttemptHistoryItem,
+    AttemptListResponse,
+    AttemptStatsSummary,
+    AttemptSubmit,
+)
 from app.schemas.practice_session import (
     PracticeSessionCreate,
     PracticeSessionListResponse,
@@ -20,7 +27,11 @@ from app.schemas.question import (
     QuestionSeedResponse,
     TopicSummary,
 )
-from app.services import practice_session_service, question_service
+from app.services import (
+    practice_attempt_service,
+    practice_session_service,
+    question_service,
+)
 
 router = APIRouter()
 
@@ -277,4 +288,93 @@ def abandon_practice_session(
         )
     abandoned_session = practice_session_service.abandon_session(db, session)
     return practice_session_service.build_session_response(db, abandoned_session)
+
+
+# ==============================================================================
+# Practice Attempt Submission & History Endpoints
+# ==============================================================================
+
+@router.post(
+    "/attempts",
+    response_model=AttemptFeedback,
+    status_code=status.HTTP_201_CREATED,
+    summary="Submit and objectively grade a practice question attempt",
+)
+def submit_practice_attempt(
+    submit_in: AttemptSubmit,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> AttemptFeedback:
+    """Grade an answer attempt deterministically, immediately returning educational feedback."""
+    try:
+        attempt, question = practice_attempt_service.grade_and_record_attempt(
+            db=db,
+            user_id=current_user.id,
+            submit_in=submit_in,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
+
+    return AttemptFeedback(
+        attempt_id=attempt.id,
+        question_id=attempt.question_id,
+        session_id=attempt.session_id,
+        user_answer=attempt.user_answer,
+        is_correct=attempt.is_correct,
+        score=attempt.score,
+        correct_answer_key=question.answer_key,
+        explanation=question.explanation,
+        duration_seconds=attempt.duration_seconds,
+        grading_version=attempt.grading_version,
+        created_at=attempt.created_at,
+    )
+
+
+@router.get(
+    "/attempts",
+    response_model=AttemptListResponse,
+    summary="List historical practice attempts for the current user",
+)
+def list_practice_attempts(
+    topic: Optional[str] = Query(None, description="Filter attempts by question topic domain"),
+    session_id: Optional[str] = Query(None, description="Filter attempts by practice session ID"),
+    is_correct: Optional[bool] = Query(None, description="Filter by correctness (true or false)"),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(50, ge=1, le=100),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> AttemptListResponse:
+    """Retrieve historical attempts with question context and user answer details."""
+    items, total = practice_attempt_service.get_user_attempts(
+        db=db,
+        user_id=current_user.id,
+        topic=topic,
+        session_id=session_id,
+        is_correct=is_correct,
+        skip=skip,
+        limit=limit,
+    )
+    return AttemptListResponse(
+        items=items,
+        total=total,
+        skip=skip,
+        limit=limit,
+    )
+
+
+@router.get(
+    "/attempts/stats",
+    response_model=AttemptStatsSummary,
+    summary="Get user practice attempt statistics and accuracy metrics",
+)
+def get_practice_attempt_stats(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> AttemptStatsSummary:
+    """Compute aggregate accuracy, count, and duration statistics by topic and difficulty."""
+    return practice_attempt_service.get_user_attempt_stats(db=db, user_id=current_user.id)
+
 
