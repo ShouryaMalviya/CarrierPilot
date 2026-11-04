@@ -79,3 +79,4 @@ class AttemptStatsSummary(BaseModel):
     total_time_seconds: int
     by_topic: Dict[str, TopicStat]
     by_difficulty: Dict[str, TopicStat]
+

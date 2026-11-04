@@ -292,3 +292,4 @@ class TestPracticeAttemptGrading:
         assert client.post("/api/v1/practice/attempts", json={"question_id": 1, "user_answer": "A"}).status_code == 401
         assert client.get("/api/v1/practice/attempts").status_code == 401
         assert client.get("/api/v1/practice/attempts/stats").status_code == 401
+

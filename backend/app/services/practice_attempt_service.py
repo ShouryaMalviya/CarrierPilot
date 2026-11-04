@@ -221,3 +221,4 @@ def get_user_attempt_stats(db: Session, user_id: int) -> AttemptStatsSummary:
         by_topic=by_topic,
         by_difficulty=by_diff,
     )
+
