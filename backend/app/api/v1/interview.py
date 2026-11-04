@@ -133,3 +133,4 @@ def abandon_session(
 ) -> InterviewSessionPublic:
     """Mark an active session as abandoned."""
     return interview_service.abandon_interview_session(db, session_id=session_id, user_id=current_user.id)
+

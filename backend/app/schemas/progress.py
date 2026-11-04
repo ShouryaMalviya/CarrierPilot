@@ -88,3 +88,4 @@ class DashboardProgressResponse(BaseModel):
     activity_timeline: List[DailyActivity]
     next_action: NextRecommendedAction
     generated_at: datetime
+

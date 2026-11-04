@@ -251,3 +251,4 @@ def abandon_interview_session(
     db.commit()
     db.refresh(session)
     return session
+

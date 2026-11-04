@@ -410,3 +410,4 @@ def get_dashboard_progress(
         next_action=next_action,
         generated_at=datetime.now(timezone.utc),
     )
+

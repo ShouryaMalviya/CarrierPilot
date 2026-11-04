@@ -382,3 +382,4 @@ class TestMockInterviewSessionWorkflow:
         assert client.get("/api/v1/interviews/sessions/1").status_code == 401
         assert client.post("/api/v1/interviews/sessions/1/submit", json={"user_response": "foo"}).status_code == 401
         assert client.post("/api/v1/interviews/sessions/1/abandon").status_code == 401
+

@@ -94,3 +94,4 @@ class InterviewCatalogResponse(BaseModel):
     roles: List[str] = Field(default_factory=list)
     competencies: List[str] = Field(default_factory=list)
     questions: List[CuratedInterviewQuestion] = Field(default_factory=list)
+

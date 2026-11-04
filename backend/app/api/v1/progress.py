@@ -64,3 +64,4 @@ def get_readiness_index(
         target_role=target_role,
         masteries=topic_cards,
     )
+
