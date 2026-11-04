@@ -27,6 +27,11 @@ from app.schemas.question import (
     QuestionSeedResponse,
     TopicSummary,
 )
+from app.schemas.recommendation import (
+    NextQuestionRecommendation,
+    RecommendationAuditOut,
+    StudyPlanResponse,
+)
 from app.schemas.topic_mastery import (
     MasteryCalculationExplanation,
     TopicMasteryListResponse,
@@ -37,6 +42,7 @@ from app.services import (
     practice_attempt_service,
     practice_session_service,
     question_service,
+    recommendation_service,
 )
 
 router = APIRouter()
@@ -418,6 +424,61 @@ def get_user_mastery_overview(
     )
 
 
+# ==============================================================================
+# Adaptive Recommendation & Study Plan Endpoints
+# ==============================================================================
+
+@router.get(
+    "/recommendations/next-question",
+    response_model=NextQuestionRecommendation,
+    summary="Get next recommended practice question with explainable rationale",
+)
+def get_next_recommended_question(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> NextQuestionRecommendation:
+    """Recommend next practice question prioritizing unpracticed core domains or weak topics (<60%)."""
+    try:
+        return recommendation_service.select_next_question(db, current_user.id)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        )
+
+
+@router.get(
+    "/recommendations/study-plan",
+    response_model=StudyPlanResponse,
+    summary="Generate prioritized diagnostic study plan for current user",
+)
+def get_diagnostic_study_plan(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> StudyPlanResponse:
+    """Generate structured study plan grouped by immediate remediation, consolidation, and maintenance."""
+    return recommendation_service.generate_study_plan(db, current_user.id)
+
+
+@router.get(
+    "/recommendations/audits",
+    response_model=List[RecommendationAuditOut],
+    summary="List recommendation decision audit trail for the current user",
+)
+def list_recommendation_audits(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=50),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> List[RecommendationAuditOut]:
+    """Retrieve historical recommendation audit logs for explainability and compliance."""
+    audits, _ = recommendation_service.list_user_recommendation_audits(
+        db, current_user.id, skip=skip, limit=limit
+    )
+    return [RecommendationAuditOut.model_validate(a) for a in audits]
+
+
+
 @router.get(
     "/mastery/{topic}",
     response_model=MasteryCalculationExplanation,
@@ -459,6 +520,61 @@ def recalculate_user_mastery(
         proficient_topics_count=proficient,
         needs_practice_topics_count=needs_practice,
     )
+
+
+# ==============================================================================
+# Adaptive Recommendation & Study Plan Endpoints
+# ==============================================================================
+
+@router.get(
+    "/recommendations/next-question",
+    response_model=NextQuestionRecommendation,
+    summary="Get next recommended practice question with explainable rationale",
+)
+def get_next_recommended_question(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> NextQuestionRecommendation:
+    """Recommend next practice question prioritizing unpracticed core domains or weak topics (<60%)."""
+    try:
+        return recommendation_service.select_next_question(db, current_user.id)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        )
+
+
+@router.get(
+    "/recommendations/study-plan",
+    response_model=StudyPlanResponse,
+    summary="Generate prioritized diagnostic study plan for current user",
+)
+def get_diagnostic_study_plan(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> StudyPlanResponse:
+    """Generate structured study plan grouped by immediate remediation, consolidation, and maintenance."""
+    return recommendation_service.generate_study_plan(db, current_user.id)
+
+
+@router.get(
+    "/recommendations/audits",
+    response_model=List[RecommendationAuditOut],
+    summary="List recommendation decision audit trail for the current user",
+)
+def list_recommendation_audits(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=50),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> List[RecommendationAuditOut]:
+    """Retrieve historical recommendation audit logs for explainability and compliance."""
+    audits, _ = recommendation_service.list_user_recommendation_audits(
+        db, current_user.id, skip=skip, limit=limit
+    )
+    return [RecommendationAuditOut.model_validate(a) for a in audits]
+
 
 
 
