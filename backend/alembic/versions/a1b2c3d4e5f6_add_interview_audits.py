@@ -52,3 +52,4 @@ def downgrade() -> None:
         batch_op.drop_index(batch_op.f('ix_interview_audits_id'))
 
     op.drop_table('interview_audits')
+

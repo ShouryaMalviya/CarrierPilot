@@ -196,7 +196,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **24** | Rubric-based feedback service | **PASS** | 5-dimension rubric engine, positive quote citations, concept coverage partitioning, feedback endpoint (189/189 tests). |
 | **25** | Optional LLM provider adapter & safety | **PASS** | Adapter pattern, prompt injection sanitizer, output score bounding, resilient fallback, provider telemetry (198/198 tests). |
 | **26** | Interview feedback quality & audit trail | **PASS** | Immutable audit table, prompt injection tracking, fallback reasons, quality reporting, zero drift (207/207 tests). |
-| **27** | Optional speech transcription (Deferred) | NOT RUN | Scheduled (Deferred). |
+| **27** | Optional speech transcription | **DEFERRED** | Explicit non-goal per product specification; typed-first interview experience complete and accessible without audio dependencies. |
 | **28** | Frontend design system & app shell | NOT RUN | Scheduled. |
 | **29** | Frontend auth & onboarding screens | NOT RUN | Scheduled. |
 | **30** | Main dashboard interface | NOT RUN | Scheduled. |

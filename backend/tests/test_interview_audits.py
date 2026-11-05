@@ -293,3 +293,4 @@ class TestInterviewAuditAPIs:
         assert client.get("/api/v1/interviews/sessions/1/audit").status_code == 401
         assert client.get("/api/v1/interviews/audits").status_code == 401
         assert client.get("/api/v1/interviews/audits/quality-report").status_code == 401
+

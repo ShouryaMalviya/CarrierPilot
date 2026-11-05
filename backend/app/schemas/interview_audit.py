@@ -46,3 +46,4 @@ class InterviewQualityReport(BaseModel):
     prompt_injections_neutralized: int = Field(..., ge=0)
     providers_used: Dict[str, int] = Field(default_factory=dict)
     zero_score_drift_verified: bool = Field(True, description="Deterministic scoring consistency verification")
+
