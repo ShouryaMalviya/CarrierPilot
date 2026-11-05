@@ -51,6 +51,9 @@ class User(Base):
     interview_sessions: Mapped[List["InterviewSession"]] = relationship(
         "InterviewSession", back_populates="user", cascade="all, delete-orphan"
     )
+    interview_audits: Mapped[List["InterviewAudit"]] = relationship(
+        "InterviewAudit", back_populates="user", cascade="all, delete-orphan"
+    )
     recommendations: Mapped[List["RecommendationAudit"]] = relationship(
         "RecommendationAudit", back_populates="user", cascade="all, delete-orphan"
     )
@@ -315,6 +318,39 @@ class InterviewSession(Base):
 
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="interview_sessions")
+    audits: Mapped[List["InterviewAudit"]] = relationship(
+        "InterviewAudit", back_populates="session", cascade="all, delete-orphan"
+    )
+
+
+class InterviewAudit(Base):
+    """Immutable audit record for interview coaching evaluations and safety checks."""
+
+    __tablename__ = "interview_audits"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    session_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("interview_sessions.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    user_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    rubric_version: Mapped[str] = mapped_column(String(50), nullable=False)
+    model_provider: Mapped[str] = mapped_column(String(50), nullable=False)
+    is_fallback: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    fallback_reason: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    prompt_injection_detected: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    raw_score: Mapped[float] = mapped_column(Float, nullable=False)
+    bounded_score: Mapped[float] = mapped_column(Float, nullable=False)
+    dimension_scores_snapshot: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
+    response_word_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    response_char_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    latency_ms: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    # Relationships
+    session: Mapped["InterviewSession"] = relationship("InterviewSession", back_populates="audits")
+    user: Mapped["User"] = relationship("User", back_populates="interview_audits")
 
 
 class RecommendationAudit(Base):

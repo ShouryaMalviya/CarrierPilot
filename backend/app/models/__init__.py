@@ -1,6 +1,7 @@
 """SQLAlchemy ORM models export."""
 
 from app.models.entities import (
+    InterviewAudit,
     InterviewSession,
     Job,
     JobSkill,
@@ -29,6 +30,7 @@ __all__ = [
     "PracticeSession",
     "TopicMastery",
     "InterviewSession",
+    "InterviewAudit",
     "RecommendationAudit",
 ]
 

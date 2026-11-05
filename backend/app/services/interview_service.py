@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+import time
 from typing import List, Optional, Tuple
 from fastapi import HTTPException, status
 from sqlalchemy import func, select
@@ -15,8 +16,8 @@ from app.schemas.interview import (
     InterviewSessionCreate,
 )
 from app.schemas.rubric import RubricFeedback
-from app.services import rubric_service
-from app.services.llm_adapter import llm_manager
+from app.services import interview_audit_service, rubric_service
+from app.services.llm_adapter import llm_manager, sanitize_response_text
 
 # Location of curated seed questions
 SEED_QUESTIONS_PATH = Path(__file__).resolve().parent.parent / "data" / "seed_interview_questions.json"
@@ -237,7 +238,11 @@ def submit_interview_response(
             key_concepts = q.key_concepts
             break
 
+    # Detect if any adversarial prompt injection attempts were present
+    _, injection_detected, _ = sanitize_response_text(clean_text)
+
     # Compute rubric feedback via LLM provider adapter (with deterministic fallback & safety)
+    start_eval_time = time.perf_counter()
     feedback, provider_used, is_fallback, fallback_reason = llm_manager.evaluate(
         question_text=session.question_text,
         user_response=clean_text,
@@ -245,6 +250,7 @@ def submit_interview_response(
         competency=session.competency,
         key_concepts=key_concepts,
     )
+    eval_latency_ms = (time.perf_counter() - start_eval_time) * 1000.0
 
     session.user_response = clean_text
     session.status = "completed"
@@ -256,6 +262,24 @@ def submit_interview_response(
 
     db.commit()
     db.refresh(session)
+
+    # Persist immutable evaluation audit record
+    interview_audit_service.record_evaluation_audit(
+        db=db,
+        session_id=session.id,
+        user_id=user_id,
+        rubric_version=feedback.rubric_version,
+        model_provider=provider_used,
+        is_fallback=is_fallback,
+        fallback_reason=fallback_reason,
+        prompt_injection_detected=injection_detected,
+        raw_score=feedback.total_score,
+        bounded_score=feedback.total_score,
+        dimension_scores_snapshot=session.dimension_scores,
+        response_text=clean_text,
+        latency_ms=eval_latency_ms,
+    )
+
     return session
 
 
@@ -299,4 +323,40 @@ def abandon_interview_session(
     db.commit()
     db.refresh(session)
     return session
+
+
+def get_session_audit(
+    db: Session,
+    session_id: int,
+    user_id: int,
+):
+    """Retrieve audit record for an interview session."""
+    return interview_audit_service.get_audit_for_session(db, session_id=session_id, user_id=user_id)
+
+
+def list_user_audits(
+    db: Session,
+    user_id: int,
+    model_provider: Optional[str] = None,
+    is_fallback: Optional[bool] = None,
+    skip: int = 0,
+    limit: int = 50,
+):
+    """List evaluation audits for the current user."""
+    return interview_audit_service.list_interview_audits(
+        db,
+        user_id=user_id,
+        model_provider=model_provider,
+        is_fallback=is_fallback,
+        skip=skip,
+        limit=limit,
+    )
+
+
+def get_user_quality_report(
+    db: Session,
+    user_id: int,
+):
+    """Generate quality and safety compliance metrics for the user's interview coaching."""
+    return interview_audit_service.get_quality_report(db, user_id=user_id)
 

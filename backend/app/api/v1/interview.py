@@ -14,6 +14,11 @@ from app.schemas.interview import (
     InterviewSessionListResponse,
     InterviewSessionPublic,
 )
+from app.schemas.interview_audit import (
+    InterviewAuditListResponse,
+    InterviewAuditOut,
+    InterviewQualityReport,
+)
 from app.schemas.rubric import RubricFeedback
 from app.services import interview_service
 
@@ -157,4 +162,56 @@ def abandon_session(
 ) -> InterviewSessionPublic:
     """Mark an active session as abandoned."""
     return interview_service.abandon_interview_session(db, session_id=session_id, user_id=current_user.id)
+
+
+@router.get(
+    "/sessions/{session_id}/audit",
+    response_model=InterviewAuditOut,
+    summary="Get evaluation audit record for a specific interview session",
+)
+def get_session_audit(
+    session_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> InterviewAuditOut:
+    """Retrieve immutable audit log of the coaching evaluation decision."""
+    return interview_service.get_session_audit(db, session_id=session_id, user_id=current_user.id)
+
+
+@router.get(
+    "/audits",
+    response_model=InterviewAuditListResponse,
+    summary="List current user's interview evaluation audit records",
+)
+def list_audits(
+    model_provider: Optional[str] = Query(None, description="Filter by model provider"),
+    is_fallback: Optional[bool] = Query(None, description="Filter by fallback status"),
+    skip: int = Query(0, ge=0, description="Offset for pagination"),
+    limit: int = Query(20, ge=1, le=100, description="Page limit"),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> InterviewAuditListResponse:
+    """Retrieve paginated audit trail of interview coaching evaluations."""
+    total, records = interview_service.list_user_audits(
+        db,
+        user_id=current_user.id,
+        model_provider=model_provider,
+        is_fallback=is_fallback,
+        skip=skip,
+        limit=limit,
+    )
+    return InterviewAuditListResponse(total=total, audits=records)
+
+
+@router.get(
+    "/audits/quality-report",
+    response_model=InterviewQualityReport,
+    summary="Get aggregate quality and fairness report for interview coaching",
+)
+def get_quality_report(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> InterviewQualityReport:
+    """Statistical summary of score distributions, bounds compliance, and safety metrics."""
+    return interview_service.get_user_quality_report(db, user_id=current_user.id)
 
