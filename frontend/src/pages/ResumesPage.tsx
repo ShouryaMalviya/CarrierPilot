@@ -23,3 +23,4 @@ export const ResumesPage: React.FC = () => {
     </div>
   );
 };
+

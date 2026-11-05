@@ -23,3 +23,4 @@ export const ProgressPage: React.FC = () => {
     </div>
   );
 };
+

@@ -93,12 +93,27 @@ export const AppShell: React.FC = () => {
 
         {/* Current Target Role Pill */}
         <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--slate-800)' }}>
-          <span style={{ fontSize: '0.75rem', color: 'var(--slate-400)', display: 'block', marginBottom: '6px' }}>
-            Active Target Role
-          </span>
-          <Badge variant="primary" className="text-truncate" style={{ maxWidth: '100%' }}>
-            {profile?.target_role || 'Junior Python Developer'}
-          </Badge>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--slate-400)' }}>
+              Active Target Role
+            </span>
+            <NavLink
+              to="/onboarding"
+              style={{ fontSize: '0.6875rem', color: 'var(--primary-400)', textDecoration: 'none', fontWeight: 600 }}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Edit
+            </NavLink>
+          </div>
+          <NavLink
+            to="/onboarding"
+            style={{ textDecoration: 'none', display: 'block' }}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Badge variant="primary" className="text-truncate" style={{ maxWidth: '100%', cursor: 'pointer' }}>
+              {profile?.target_role || 'Junior Python Developer'}
+            </Badge>
+          </NavLink>
         </div>
 
         {/* Nav Links */}

@@ -23,3 +23,4 @@ export const InterviewsPage: React.FC = () => {
     </div>
   );
 };
+

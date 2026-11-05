@@ -96,3 +96,4 @@ export const api = {
   delete: <T>(endpoint: string, headers?: Record<string, string>) =>
     request<T>(endpoint, { method: 'DELETE', headers }),
 };
+

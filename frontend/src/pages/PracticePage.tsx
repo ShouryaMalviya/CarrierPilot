@@ -23,3 +23,4 @@ export const PracticePage: React.FC = () => {
     </div>
   );
 };
+

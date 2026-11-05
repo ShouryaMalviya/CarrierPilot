@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, Profile } from '../types';
+import { User, Profile, ProfileUpdate } from '../types';
 import { api } from '../services/api';
 
 interface AuthContextType {
@@ -8,9 +8,10 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (token: string, user: User) => Promise<void>;
+  login: (token: string, user?: User) => Promise<void>;
   logout: () => void;
   refreshProfile: () => Promise<void>;
+  updateProfile: (data: ProfileUpdate) => Promise<Profile>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,20 +25,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchProfile = async () => {
+  const fetchProfile = async (): Promise<Profile | null> => {
     try {
-      const data = await api.get<Profile>('/profile/me');
+      const data = await api.get<Profile>('/profile');
       setProfile(data);
+      return data;
     } catch {
       // Profile may not exist yet or token expired
+      return null;
     }
   };
 
-  const login = async (newToken: string, newUser: User) => {
+  const login = async (newToken: string, newUser?: User) => {
     localStorage.setItem('cp_token', newToken);
-    localStorage.setItem('cp_user', JSON.stringify(newUser));
     setToken(newToken);
-    setUser(newUser);
+
+    if (newUser) {
+      localStorage.setItem('cp_user', JSON.stringify(newUser));
+      setUser(newUser);
+    } else {
+      try {
+        const currentUser = await api.get<User>('/auth/me');
+        localStorage.setItem('cp_user', JSON.stringify(currentUser));
+        setUser(currentUser);
+      } catch {
+        // Fallback if me call fails
+      }
+    }
     await fetchProfile();
   };
 
@@ -53,6 +67,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (token) {
       await fetchProfile();
     }
+  };
+
+  const updateProfile = async (data: ProfileUpdate): Promise<Profile> => {
+    const updated = await api.put<Profile>('/profile', data);
+    setProfile(updated);
+    return updated;
   };
 
   useEffect(() => {
@@ -93,6 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         logout,
         refreshProfile,
+        updateProfile,
       }}
     >
       {children}

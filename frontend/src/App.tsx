@@ -7,6 +7,7 @@ import { AppShell } from './components/layout/AppShell';
 
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { OnboardingPage } from './pages/OnboardingPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ResumesPage } from './pages/ResumesPage';
 import { MatchingPage } from './pages/MatchingPage';
@@ -36,6 +37,7 @@ export const App: React.FC = () => {
             >
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="onboarding" element={<OnboardingPage />} />
               <Route path="resumes" element={<ResumesPage />} />
               <Route path="matching" element={<MatchingPage />} />
               <Route path="practice" element={<PracticePage />} />

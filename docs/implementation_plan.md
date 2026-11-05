@@ -198,7 +198,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **26** | Interview feedback quality & audit trail | **PASS** | Immutable audit table, prompt injection tracking, fallback reasons, quality reporting, zero drift (207/207 tests). |
 | **27** | Optional speech transcription | **DEFERRED** | Explicit non-goal per product specification; typed-first interview experience complete and accessible without audio dependencies. |
 | **28** | Frontend design system & app shell | **PASS** | CSS design tokens, responsive AppShell, React Router foundation, accessible alerts, ethical disclosures (Typecheck & Vite build 1592 modules 0 errors). |
-| **29** | Frontend auth & onboarding screens | NOT RUN | Scheduled. |
+| **29** | Frontend auth & onboarding screens | **PASS** | Validated login, register with strength meter, mandatory statutory disclosure checkbox, role onboarding wizard, and frontend-backend contract tests (211/211 passing tests, Vite build 1593 modules). |
 | **30** | Main dashboard interface | NOT RUN | Scheduled. |
 | **31** | Resume workspace UI | NOT RUN | Scheduled. |
 | **32** | Job matching UI | NOT RUN | Scheduled. |

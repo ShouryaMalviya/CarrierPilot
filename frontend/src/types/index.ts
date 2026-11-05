@@ -16,6 +16,12 @@ export interface AuthResponse {
   user: User;
 }
 
+export interface TokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+}
+
 export interface Profile {
   id: number;
   user_id: number;
@@ -24,6 +30,20 @@ export interface Profile {
   consent_analytics: boolean;
   created_at: string;
   updated_at: string;
+}
+
+export interface ProfileUpdate {
+  target_role?: string;
+  preferred_language?: string;
+  consent_analytics?: boolean;
+}
+
+export interface OnboardingDisclosure {
+  purpose: string;
+  disclaimers: string[];
+  data_retention_policy: string;
+  camera_or_mic_required: boolean;
+  supported_roles: string[];
 }
 
 export interface ResumeSkill {
