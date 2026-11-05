@@ -16,6 +16,7 @@ from app.schemas.interview import (
 )
 from app.schemas.rubric import RubricFeedback
 from app.services import rubric_service
+from app.services.llm_adapter import llm_manager
 
 # Location of curated seed questions
 SEED_QUESTIONS_PATH = Path(__file__).resolve().parent.parent / "data" / "seed_interview_questions.json"
@@ -236,8 +237,8 @@ def submit_interview_response(
             key_concepts = q.key_concepts
             break
 
-    # Compute deterministic rubric feedback across the 5 dimensions
-    feedback = rubric_service.evaluate_response(
+    # Compute rubric feedback via LLM provider adapter (with deterministic fallback & safety)
+    feedback, provider_used, is_fallback, fallback_reason = llm_manager.evaluate(
         question_text=session.question_text,
         user_response=clean_text,
         role=session.role,
@@ -247,6 +248,7 @@ def submit_interview_response(
 
     session.user_response = clean_text
     session.status = "completed"
+    session.model_provider = provider_used
     session.rubric_version = feedback.rubric_version
     session.total_score = feedback.total_score
     session.dimension_scores = {k: v.model_dump() for k, v in feedback.dimension_scores.items()}
@@ -255,6 +257,11 @@ def submit_interview_response(
     db.commit()
     db.refresh(session)
     return session
+
+
+def get_provider_status() -> dict:
+    """Retrieve telemetry status of the active AI/LLM evaluation provider."""
+    return llm_manager.get_status()
 
 
 def get_interview_feedback(

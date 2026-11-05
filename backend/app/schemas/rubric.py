@@ -1,7 +1,7 @@
 """Pydantic schemas for 5-dimension mock interview rubric evaluation and coaching feedback."""
 
-from typing import Dict, List, Optional
-from pydantic import BaseModel, ConfigDict, Field
+from typing import Any, Dict, List, Optional
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.schemas.interview import INTERVIEW_ETHICAL_DISCLAIMER
 
@@ -19,6 +19,16 @@ class DimensionScore(BaseModel):
     positive_evidence: List[str] = Field(
         default_factory=list, description="Verbatim quote snippets from the candidate's answer"
     )
+
+    @field_validator("score", mode="before")
+    @classmethod
+    def clamp_dimension_score(cls, v: Any) -> float:
+        """Ensure score is always strictly clamped between 0.0 and 20.0."""
+        try:
+            val = float(v)
+            return round(max(0.0, min(20.0, val)), 1)
+        except (ValueError, TypeError):
+            return 0.0
 
 
 class RubricFeedback(BaseModel):
@@ -49,3 +59,13 @@ class RubricFeedback(BaseModel):
         default=INTERVIEW_ETHICAL_DISCLAIMER,
         description="Mandatory ethical disclaimer regarding scores and lack of biometric inference",
     )
+
+    @field_validator("total_score", mode="before")
+    @classmethod
+    def clamp_total_score(cls, v: Any) -> float:
+        """Ensure total score is always strictly clamped between 0.0 and 100.0."""
+        try:
+            val = float(v)
+            return round(max(0.0, min(100.0, val)), 1)
+        except (ValueError, TypeError):
+            return 0.0

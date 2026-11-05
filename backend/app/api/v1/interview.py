@@ -21,6 +21,15 @@ router = APIRouter()
 
 
 @router.get(
+    "/provider/status",
+    summary="Get status of AI evaluation provider and deterministic fallback state",
+)
+def get_provider_status() -> dict:
+    """Retrieve telemetry status of the active AI model provider and fallback adapter."""
+    return interview_service.get_provider_status()
+
+
+@router.get(
     "/catalog",
     response_model=InterviewCatalogResponse,
     summary="List curated technical and behavioral mock interview questions",
