@@ -14,6 +14,8 @@ from app.schemas.interview import (
     InterviewResponseSubmit,
     InterviewSessionCreate,
 )
+from app.schemas.rubric import RubricFeedback
+from app.services import rubric_service
 
 # Location of curated seed questions
 SEED_QUESTIONS_PATH = Path(__file__).resolve().parent.parent / "data" / "seed_interview_questions.json"
@@ -210,7 +212,7 @@ def submit_interview_response(
     user_id: int,
     payload: InterviewResponseSubmit,
 ) -> InterviewSession:
-    """Submit a typed response for an interview session."""
+    """Submit a typed response for an interview session and compute rubric coaching feedback."""
     session = get_interview_session(db, session_id=session_id, user_id=user_id)
 
     if session.status != "in_progress":
@@ -226,11 +228,50 @@ def submit_interview_response(
             detail="Candidate response must be at least 20 non-whitespace characters long.",
         )
 
+    # Determine key concepts from question bank if applicable
+    all_questions = load_curated_questions()
+    key_concepts: List[str] = []
+    for q in all_questions:
+        if q.question_text == session.question_text or (q.role == session.role and q.competency == session.competency):
+            key_concepts = q.key_concepts
+            break
+
+    # Compute deterministic rubric feedback across the 5 dimensions
+    feedback = rubric_service.evaluate_response(
+        question_text=session.question_text,
+        user_response=clean_text,
+        role=session.role,
+        competency=session.competency,
+        key_concepts=key_concepts,
+    )
+
     session.user_response = clean_text
-    session.status = "submitted"
+    session.status = "completed"
+    session.rubric_version = feedback.rubric_version
+    session.total_score = feedback.total_score
+    session.dimension_scores = {k: v.model_dump() for k, v in feedback.dimension_scores.items()}
+    session.feedback_json = feedback.model_dump()
+
     db.commit()
     db.refresh(session)
     return session
+
+
+def get_interview_feedback(
+    db: Session,
+    session_id: int,
+    user_id: int,
+) -> RubricFeedback:
+    """Retrieve structured rubric coaching feedback for a completed interview session."""
+    session = get_interview_session(db, session_id=session_id, user_id=user_id)
+
+    if not session.feedback_json or session.status not in ("submitted", "completed"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Interview session {session_id} has not been completed or evaluated yet.",
+        )
+
+    return RubricFeedback(**session.feedback_json)
 
 
 def abandon_interview_session(

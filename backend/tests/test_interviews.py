@@ -226,8 +226,10 @@ class TestMockInterviewSessionWorkflow:
         data = submit_resp.json()
 
         assert data["id"] == session_id
-        assert data["status"] == "submitted"
+        assert data["status"] in ("submitted", "completed")
         assert data["user_response"] == written_answer
+        assert data["total_score"] is not None
+        assert data["dimension_scores"] is not None
 
     def test_submit_response_too_short_rejected(self, client: TestClient):
         """Answers shorter than 20 non-whitespace characters are rejected with 400."""

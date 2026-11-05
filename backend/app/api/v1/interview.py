@@ -14,6 +14,7 @@ from app.schemas.interview import (
     InterviewSessionListResponse,
     InterviewSessionPublic,
 )
+from app.schemas.rubric import RubricFeedback
 from app.services import interview_service
 
 router = APIRouter()
@@ -102,6 +103,20 @@ def get_session(
 ) -> InterviewSessionPublic:
     """Retrieve session details, questions, answers, and rubric evaluations."""
     return interview_service.get_interview_session(db, session_id=session_id, user_id=current_user.id)
+
+
+@router.get(
+    "/sessions/{session_id}/feedback",
+    response_model=RubricFeedback,
+    summary="Get rubric evaluation and coaching feedback for a completed session",
+)
+def get_session_feedback(
+    session_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> RubricFeedback:
+    """Retrieve detailed 5-dimension rubric scores, quote citations, and actionable recommendations."""
+    return interview_service.get_interview_feedback(db, session_id=session_id, user_id=current_user.id)
 
 
 @router.post(
