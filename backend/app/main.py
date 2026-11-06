@@ -65,6 +65,16 @@ def create_application() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Attach standard security hardening headers to all responses
+    @application.middleware("http")
+    async def add_security_headers(request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        return response
+
     # Register structured exception handlers
     application.add_exception_handler(FastAPIHTTPException, http_exception_handler)
     application.add_exception_handler(StarletteHTTPException, http_exception_handler)

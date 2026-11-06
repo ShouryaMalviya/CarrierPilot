@@ -17,16 +17,17 @@ settings = get_settings()
 
 # Known prompt injection and system override signatures
 PROMPT_INJECTION_PATTERNS = [
-    r"(?i)ignore\s+(?:all\s+)?(?:previous|prior|above)\s+(?:instructions|directions|prompts|rules)",
-    r"(?i)disregard\s+(?:all\s+)?(?:previous|prior|above)\s+(?:instructions|directions|prompts|rules)",
+    r"(?i)ignore\s+(?:all\s+)?(?:previous|prior|above)\s+(?:rubric\s+)?(?:instructions|directions|prompts|rules|constraints)",
+    r"(?i)disregard\s+(?:all\s+)?(?:previous|prior|above)\s+(?:rubric\s+)?(?:instructions|directions|prompts|rules|constraints)",
     r"(?i)forget\s+(?:all\s+)?(?:previous|prior|above)\s+(?:instructions|directions)",
     r"(?i)you\s+are\s+now\s+(?:in\s+)?(?:developer\s+mode|dan|unfiltered|jailbroken)",
-    r"(?i)system\s*:\s*(?:you\s+are|override|give)",
+    r"(?i)system\s*(?:prompt\s*)?(?::|\b(?:override|you\s+are|give))",
     r"(?i)<system>.*?</system>",
     r"(?i)\[system\].*?\[/system\]",
-    r"(?i)give\s+(?:me|this\s+candidate|the\s+user)\s+(?:a\s+score\s+of\s+)?(?:100|maximum|perfect)",
+    r"(?i)give\s+(?:me|this\s+candidate|this\s+student|the\s+user|student|candidate)\s+(?:a\s+score\s+of\s+)?(?:100|maximum|perfect)",
     r"(?i)you\s+must\s+award\s+(?:100|20|maximum)",
     r"(?i)bypass\s+(?:all\s+)?(?:safety|content|rubric)\s+(?:filters|evaluations)",
+    r"(?i)prompt\s+override\s*:",
 ]
 
 
