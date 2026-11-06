@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: careerpilot-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=False
+      - SECRET_KEY=careerpilot-secure-production-deploy-key-change-in-prod-32c
+      - DATABASE_URL=sqlite:////app/data/careerpilot.db
+      - UPLOAD_DIR=/app/uploads
+      - CORS_ORIGINS=["http://localhost:5173", "http://localhost:80", "http://127.0.0.1:5173", "http://localhost"]
+      - AI_PROVIDER=local
+    volumes:
+      - backend-data:/app/data
+      - backend-uploads:/app/uploads
+    networks:
+      - careerpilot-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: careerpilot-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - careerpilot-network
+
+volumes:
+  backend-data:
+  backend-uploads:
+
+networks:
+  careerpilot-network:
+    driver: bridge
