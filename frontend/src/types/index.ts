@@ -90,8 +90,17 @@ export interface ResumeListResponse {
   total: number;
 }
 
+export interface JobSkillResponse {
+  id: number;
+  skill_id: number;
+  canonical_name: string;
+  category: string;
+  is_required: boolean;
+}
+
 export interface Job {
   id: number;
+  user_id?: number;
   title: string;
   company: string | null;
   description: string;
@@ -100,6 +109,104 @@ export interface Job {
   is_active: boolean;
   required_skills: string[];
   preferred_skills: string[];
+  skills?: JobSkillResponse[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface JobListResponse {
+  jobs: Job[];
+  total: number;
+}
+
+export interface JobCreate {
+  title: string;
+  company?: string | null;
+  description: string;
+  source_url?: string | null;
+  required_skills?: string[];
+  preferred_skills?: string[];
+}
+
+export interface SkillGapBreakdown {
+  matched_required: string[];
+  missing_required: string[];
+  matched_preferred: string[];
+  missing_preferred: string[];
+  additional_skills: string[];
+}
+
+export interface MatchedSkillEvidence {
+  canonical_name: string;
+  category: string;
+  is_required: boolean;
+  evidence_snippet: string | null;
+  confidence_score?: number;
+  is_user_confirmed?: boolean;
+}
+
+export interface LearningRecommendation {
+  skill_name: string;
+  category: string;
+  priority: string;
+  rationale: string;
+  suggested_action: string;
+}
+
+export interface MatchScoreBreakdown {
+  required_coverage: number;
+  preferred_coverage: number;
+  tfidf_similarity: number;
+  semantic_similarity: number | null;
+  overall_score: number;
+  similarity_mode: string;
+  is_fallback: boolean;
+  fallback_reason: string | null;
+  applied_weights?: Record<string, number>;
+}
+
+export interface LexicalMatchResponse {
+  resume_id: number;
+  job_id: number;
+  job_title: string;
+  company: string | null;
+  scores: MatchScoreBreakdown;
+  skill_gap: SkillGapBreakdown;
+  evidence: MatchedSkillEvidence[];
+  recommendations: LearningRecommendation[];
+  explanation_summary: string;
+  disclaimer: string;
+}
+
+export interface BatchMatchItem {
+  job_id: number;
+  job_title: string;
+  company: string | null;
+  is_synthetic: boolean;
+  overall_score: number;
+  required_coverage: number;
+  preferred_coverage: number;
+  tfidf_similarity: number;
+  semantic_similarity: number | null;
+  similarity_mode: string;
+  is_fallback: boolean;
+  missing_required_count: number;
+  missing_required: string[];
+}
+
+export interface BatchMatchResponse {
+  resume_id: number;
+  total_jobs_evaluated: number;
+  matches: BatchMatchItem[];
+  disclaimer: string;
+}
+
+export interface SemanticStatusResponse {
+  is_available: boolean;
+  model_name: string;
+  provider_type: string;
+  fallback_mode: boolean;
+  last_error: string | null;
 }
 
 export interface HybridMatchResult {
