@@ -230,16 +230,42 @@ export interface QuestionOption {
 export interface PracticeQuestion {
   id: number;
   topic: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: 'easy' | 'medium' | 'hard' | string;
   question_text: string;
   options: QuestionOption[];
 }
 
+export interface PracticeSession {
+  id: string;
+  user_id: number;
+  topic: string;
+  difficulty: string | null;
+  status: 'in_progress' | 'completed' | 'abandoned';
+  total_questions: number;
+  current_index: number;
+  current_question: PracticeQuestion | null;
+  score: number | null;
+  created_at: string;
+  completed_at: string | null;
+}
+
+export interface PracticeTopicSummary {
+  topic: string;
+  total_questions: number;
+  difficulty_counts: Record<string, number>;
+}
+
 export interface AttemptFeedback {
+  attempt_id?: number;
+  question_id: number;
+  session_id?: string | null;
+  user_answer: string;
   is_correct: boolean;
   score: number;
-  answer_key: string;
+  correct_answer_key: string;
   explanation: string;
+  duration_seconds?: number | null;
+  created_at?: string;
 }
 
 export interface TopicMastery {
