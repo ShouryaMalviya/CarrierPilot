@@ -320,6 +320,27 @@ export interface DashboardProgress {
   generated_at: string;
 }
 
+export interface CuratedInterviewQuestion {
+  id: string;
+  role: string;
+  competency: string;
+  question_text: string;
+  guidelines: string[];
+  key_concepts: string[];
+}
+
+export interface InterviewCatalogResponse {
+  total: number;
+  roles: string[];
+  competencies: string[];
+  questions: CuratedInterviewQuestion[];
+}
+
+export interface InterviewSessionListResponse {
+  total: number;
+  sessions: InterviewSession[];
+}
+
 export interface DimensionScore {
   dimension: string;
   label: string;
