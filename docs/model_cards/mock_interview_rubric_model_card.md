@@ -26,3 +26,4 @@
 - **Immutable Auditing**: All evaluations logged in `InterviewAudit` with provider metadata, prompt injection detection flag, and latency profiling.
 - **Mandatory Statutory Disclaimer**:
   > *"CareerPilot AI mock interview scores evaluate written technical articulation and structured reasoning against standardized rubrics. They do not predict interview callbacks or hiring outcomes, nor guarantee placement. The platform does not analyze voice, video, or biometric indicators."*
+

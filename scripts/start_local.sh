@@ -37,3 +37,4 @@ trap cleanup SIGINT SIGTERM EXIT
 # 4. Launch Frontend
 echo -e "\n[3/3] Launching Vite Frontend on http://localhost:5173..."
 npm --prefix frontend run dev
+

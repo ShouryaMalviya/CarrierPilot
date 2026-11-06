@@ -25,3 +25,4 @@ Write-Host "`n[3/3] Launching Vite Frontend on http://localhost:5173..." -Foregr
 Write-Host "Press Ctrl+C to terminate services." -ForegroundColor White
 
 npm --prefix frontend run dev
+

@@ -43,3 +43,4 @@ volumes:
 networks:
   careerpilot-network:
     driver: bridge
+

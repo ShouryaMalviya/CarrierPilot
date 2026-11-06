@@ -178,3 +178,4 @@ Prior to public production exposure:
 - [x] **Prompt Injection Defense**: Multi-pattern regex sanitizer (`PROMPT_INJECTION_PATTERNS`) and immutable audit logging.
 - [x] **Zero Biometric Inferences**: Architecture explicitly omits webcam, microphone, and psychometric inference pipelines.
 - [x] **Ethical Disclaimers**: Statutory educational non-guarantee disclosures attached to every scoring endpoint.
+

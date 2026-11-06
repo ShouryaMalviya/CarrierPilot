@@ -28,3 +28,4 @@ The engine classifies mastery into explainable pedagogical tiers:
 ## Ethical Considerations & Limitations
 - **Objective MCQ Focus**: Measures conceptual recall and code syntax comprehension; does not evaluate full software design synthesis or teamwork.
 - **Deterministic Transparency**: Every student can inspect the exact mathematical contributions of each prior attempt without proprietary black-box calculations.
+

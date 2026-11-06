@@ -29,3 +29,4 @@
 - **Synonym Normalization**: Relies on a canonical taxonomy dictionary (`app/services/skill_taxonomy.py`) with user confirmation controls to mitigate vocabulary divergence.
 - **Mandatory Disclaimer**: Every API response delivers the statutory educational disclaimer:
   > *"Match scores reflect automated text overlap and skill taxonomy alignment for self-assessment. They do not predict interview invitations or hiring outcomes, nor guarantee placement."*
+

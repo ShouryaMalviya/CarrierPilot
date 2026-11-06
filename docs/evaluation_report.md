@@ -147,3 +147,4 @@ In strict compliance with university academic and ethical software guidelines:
 1. **No Hiring Guarantees**: CareerPilot AI never guarantees placement or predicts specific employer hiring decisions.
 2. **Educational Non-Biometric Scope**: Mock interviews are typed-first. The platform explicitly refuses to infer personality, honesty, or mental state from video, voice, or biometric indicators.
 3. **Auditability**: Every AI evaluation is permanently logged in the `InterviewAudit` repository with model provenance, latency, and bounds compliance telemetry.
+
