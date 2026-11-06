@@ -48,22 +48,46 @@ export interface OnboardingDisclosure {
 
 export interface ResumeSkill {
   id: number;
+  resume_id?: number;
   skill_id: number;
   canonical_name: string;
   category: string;
   confidence_score: number;
   evidence_snippet: string | null;
   is_user_confirmed: boolean;
+  is_auto_extracted?: boolean;
+  created_at?: string;
 }
 
 export interface Resume {
   id: number;
+  user_id?: number;
   original_filename: string;
   file_size_bytes: number;
   mime_type: string;
-  parse_status: string;
+  parse_status: 'pending' | 'success' | 'warning' | 'error' | string;
+  parser_version?: string | null;
+  parsed_content?: {
+    char_count?: number;
+    word_count?: number;
+    line_count?: number;
+    sections?: Record<string, string>;
+    [key: string]: any;
+  } | null;
   created_at: string;
+  updated_at?: string;
+  skills?: ResumeSkill[];
+}
+
+export interface ResumeSectionsResponse {
+  resume_id: number;
+  sections: Record<string, string>;
   skills: ResumeSkill[];
+}
+
+export interface ResumeListResponse {
+  resumes: Resume[];
+  total: number;
 }
 
 export interface Job {

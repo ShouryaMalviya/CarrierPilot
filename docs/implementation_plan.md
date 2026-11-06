@@ -200,7 +200,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **28** | Frontend design system & app shell | **PASS** | CSS design tokens, responsive AppShell, React Router foundation, accessible alerts, ethical disclosures (Typecheck & Vite build 1592 modules 0 errors). |
 | **29** | Frontend auth & onboarding screens | **PASS** | Validated login, register with strength meter, mandatory statutory disclosure checkbox, role onboarding wizard, and frontend-backend contract tests (211/211 passing tests, Vite build 1593 modules). |
 | **30** | Main dashboard interface | **PASS** | Live telemetry, streak counters, 4-factor readiness breakdown, next-action card, topic mastery cards, 14-day activity chart (211/211 passing tests, Vite build 1593 modules). |
-| **31** | Resume workspace UI | NOT RUN | Scheduled. |
+| **31** | Resume workspace UI | **PASS** | Drag-drop PDF/DOCX uploader, section segmentation viewer/editor, categorized skill taxonomy pills, evidence inspector, manual correction (211/211 passing tests, Vite build 1593 modules). |
 | **32** | Job matching UI | NOT RUN | Scheduled. |
 | **33** | Practice room UI | NOT RUN | Scheduled. |
 | **34** | Mock interview UI | NOT RUN | Scheduled. |
