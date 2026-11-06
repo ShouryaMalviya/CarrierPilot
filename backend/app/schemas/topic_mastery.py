@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Dict, List, Optional
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 
 
 class TopicMasteryOut(BaseModel):
@@ -44,6 +44,26 @@ class AttemptWeightContribution(BaseModel):
     weighted_score: float
     max_possible_weighted_score: float
 
+    @computed_field
+    @property
+    def attempt_index(self) -> int:
+        return self.recency_index + 1
+
+    @computed_field
+    @property
+    def recency_weight(self) -> float:
+        return self.weight
+
+    @computed_field
+    @property
+    def difficulty_multiplier(self) -> float:
+        return self.difficulty_factor
+
+    @computed_field
+    @property
+    def score_contribution(self) -> float:
+        return self.weighted_score
+
 
 class MasteryCalculationExplanation(BaseModel):
     """Full step-by-step mathematical audit for a topic mastery calculation."""
@@ -58,4 +78,24 @@ class MasteryCalculationExplanation(BaseModel):
     reason_codes: List[str]
     attempt_contributions: List[AttemptWeightContribution]
     last_calculated_at: datetime
+
+    @computed_field
+    @property
+    def decay_factor(self) -> float:
+        return self.decay_gamma
+
+    @computed_field
+    @property
+    def attempts_considered(self) -> int:
+        return self.total_attempts
+
+    @computed_field
+    @property
+    def formula_explanation(self) -> str:
+        return self.formula
+
+    @computed_field
+    @property
+    def contributions(self) -> List[AttemptWeightContribution]:
+        return self.attempt_contributions
 
