@@ -268,6 +268,75 @@ export interface AttemptFeedback {
   created_at?: string;
 }
 
+export interface AttemptHistoryItem {
+  id: number;
+  question_id: number;
+  session_id: string | null;
+  user_answer: string;
+  is_correct: boolean;
+  score: number;
+  duration_seconds: number | null;
+  created_at: string;
+  topic: string;
+  difficulty: string;
+  question_text: string;
+}
+
+export interface AttemptListResponse {
+  items: AttemptHistoryItem[];
+  total: number;
+}
+
+export interface AttemptStatsSummary {
+  total_attempts: number;
+  correct_attempts: number;
+  overall_accuracy: number;
+  accuracy_by_topic: Record<string, number>;
+  accuracy_by_difficulty: Record<string, number>;
+  average_duration_seconds: number;
+}
+
+export interface MasteryCalculationExplanation {
+  topic: string;
+  mastery_score: number;
+  decay_factor: number;
+  attempts_considered: number;
+  difficulty_factors: Record<string, number>;
+  contributions: Array<{
+    attempt_index: number;
+    difficulty: string;
+    is_correct: boolean;
+    recency_weight: number;
+    difficulty_multiplier: number;
+    score_contribution: number;
+  }>;
+  formula_explanation: string;
+}
+
+export interface InterviewAuditOut {
+  id: number;
+  session_id: number;
+  user_id: number;
+  model_provider: string;
+  evaluated_score: number;
+  prompt_injection_flag: boolean;
+  is_fallback: boolean;
+  fallback_reason: string | null;
+  latency_ms: number;
+  created_at: string;
+}
+
+export interface InterviewQualityReport {
+  total_evaluations: number;
+  average_score: number;
+  min_score: number;
+  max_score: number;
+  prompt_injections_detected: number;
+  fallback_evaluations_count: number;
+  average_latency_ms: number;
+  compliance_rate: number;
+}
+
 export interface TopicMastery {
   topic: string;
   mastery_score: number;

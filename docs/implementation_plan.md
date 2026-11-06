@@ -204,7 +204,7 @@ This implementation plan defines the sequenced, phase-gated execution of **Caree
 | **32** | Job matching UI | **PASS** | Resume-job alignment matrix, batch ranking, score decomposition, skill gap badges, remediation recommendations, custom job intake (211/211 passing tests, Vite build 1593 modules). |
 | **33** | Practice room UI | **PASS** | Interactive MCQ studio, topic/adaptive launcher, progressive prompt delivery, instant objective grading, pedagogical feedback, mastery tracking (211/211 passing tests, Vite build 1593 modules). |
 | **34** | Mock interview UI | **PASS** | Typed interview studio, STAR technique helper, 5-dimension rubric breakdown, verbatim quote evidence, concept coverage matrix (211/211 passing tests, Vite build 1593 modules). |
-| **35** | Progress & export UI | NOT RUN | Scheduled. |
+| **35** | Progress & export UI | **PASS** | Top telemetry stats, topic mastery bars, step-by-step decay math audit modal, diagnostic attempt history table, AI evaluation audit log, quality & fairness report, JSON data export & data erasure controls (211/211 passing tests, Vite build 1593 modules). |
 | **36** | End-to-end integration & contract audit | NOT RUN | Scheduled. |
 | **37** | Security, privacy, accessibility & regression | NOT RUN | Scheduled. |
 | **38** | Final ML evaluation & report artifacts | NOT RUN | Scheduled. |
