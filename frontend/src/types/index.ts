@@ -120,37 +120,47 @@ export interface TopicMastery {
   reason_codes: string[];
 }
 
+export interface DailyActivity {
+  date: string;
+  attempt_count: number;
+  correct_count: number;
+  duration_seconds: number;
+}
+
+export interface NextRecommendedAction {
+  action_type: 'upload_resume' | 'start_practice' | 'remediate_weak_topic' | 'advance_challenge' | 'mock_interview' | 'explore_jobs' | string;
+  title: string;
+  description: string;
+  target_topic: string | null;
+  target_url: string | null;
+}
+
+export interface ReadinessBreakdown {
+  overall_readiness_score: number;
+  profile_resume_score: number;
+  practice_mastery_score: number;
+  job_matching_score: number;
+  mock_interview_score: number;
+  readiness_level: 'beginner' | 'developing' | 'placement_ready' | 'interview_ready';
+  disclaimer: string;
+}
+
 export interface DashboardProgress {
+  user_id: number;
+  target_role: string;
   streak_days: number;
   longest_streak_days: number;
   total_attempts: number;
   correct_attempts: number;
   overall_accuracy_percentage: number;
+  total_practice_time_seconds: number;
   completed_sessions_count: number;
   active_sessions_count: number;
-  readiness: {
-    overall_readiness_score: number;
-    profile_resume_score: number;
-    practice_mastery_score: number;
-    job_matching_score: number;
-    mock_interview_score: number;
-    readiness_level: 'beginner' | 'developing' | 'placement_ready';
-    disclaimer: string;
-  };
+  readiness: ReadinessBreakdown;
   topic_masteries: TopicMastery[];
-  activity_timeline: Array<{
-    date: string;
-    attempt_count: number;
-    correct_count: number;
-    duration_seconds: number;
-  }>;
-  next_action: {
-    action_type: string;
-    title: string;
-    description: string;
-    target_topic: string | null;
-    target_url: string | null;
-  };
+  activity_timeline: DailyActivity[];
+  next_action: NextRecommendedAction;
+  generated_at: string;
 }
 
 export interface DimensionScore {
